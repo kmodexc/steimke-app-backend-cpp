@@ -15,7 +15,7 @@ SRCPATH = src
 BINPATH = bin
 CPPFLAGS = -c -Wall -g -I$(INCPATH)
 
-all: clean $(PROG)
+build: $(PROG)
 
 main.o:
 	mkdir -p $(OBJPATH)
