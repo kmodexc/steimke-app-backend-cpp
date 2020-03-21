@@ -6,10 +6,14 @@ vpath %.o obj
 
 PROG = rlserv
 CC = g++
-LDFLAGS = 
+LDFLAGS = -Lmodules/libhttp -l/libhttp
 OBJPATH = obj
-_OBJS = main.o
-OBJS = $(patsubst %,$(OBJPATH)/%,$(_OBJS))
+OBJS = \
+	main.o 				\
+	DependencyService.o	\
+	App.o				\
+	HTTPSocket.o
+OBJS_w_PATH = $(patsubst %,$(OBJPATH)/%,$(OBJS))
 INCPATH = include
 SRCPATH = src
 BINPATH = bin
@@ -17,13 +21,15 @@ CPPFLAGS = -c -Wall -g -I$(INCPATH)
 
 build: $(PROG)
 
-main.o:
+init:
 	mkdir -p $(OBJPATH)
-	$(CC) $(CPPFLAGS) -o $(OBJPATH)/main.o $(SRCPATH)/main.cpp
-
-$(PROG): $(_OBJS)
 	mkdir -p $(BINPATH)
-	$(CC) -o $(BINPATH)/$(PROG) $(OBJS)
+
+%.o: %.cpp init
+	$(CC) $(CPPFLAGS) -o $(OBJPATH)/$@ $<
+
+$(PROG): $(OBJS) init
+	$(CC) -o $(BINPATH)/$(PROG) $(LDFLAGS) $(OBJS_w_PATH)
 
 clean:
 	rm -f -r $(OBJPATH) $(BINPATH)

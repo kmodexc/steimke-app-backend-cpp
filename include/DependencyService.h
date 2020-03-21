@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IHTTPSocket.h"
+#include "HTTPSocket.h"
 
 namespace rls{
 

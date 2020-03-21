@@ -3,7 +3,7 @@
 namespace rls{
 
 IHTTPSocket* DependencyService::getHttpSocket(){
-	return nullptr;
+	return new HTTPSocket();
 }
 
 }
