@@ -1,11 +1,13 @@
 #pragma once
 #include "DependencyService.h"
+#include "IJSONSerializer.h"
 #include <iostream>
 
 namespace rls{
 
 class App : public IConHandler{
 	IHTTPSocket* soc;
+	IJSONSerializer* ser;
 public:
 	App();
 	bool initialize();

@@ -35,28 +35,57 @@ void App::run()
 
 bool App::get(IConHandle *soc, std::string path)
 {
-	char content[100];
-	char message[200];
-
-	// Prepare the message we're going to send
-	int content_length = snprintf(content, sizeof(content),
-								  "Hello from HelloSteimke RESTles API Server!\nRequested Path: '%s'\n", path.c_str());
-
-	// create whole message
-	snprintf(message, sizeof(message),
-			 "HTTP/1.1 200 OK\r\n"
-			 "Content-Type: text/plain\r\n"
-			 "Content-Length: %d\r\n" // Always set Content-Length
-			 "\r\n"
-			 "%s",
-			 content_length, content);
-
-	soc->send(message);
-
 	cout << "Incoming GET Request" << endl;
 	cout << "Requested Path: " << path << endl;
 
+	// answer if item is requested
+	if (path.find("/api/item/") != 0)
+	{
+		Item it;
+		std::string content = ser->toJSON(it);
+
+		std::string message;
+
+		message += "HTTP/1.1 200 OK\r\n";
+		message += "Content-Type: text/plain\r\n";
+		message += "Content-Length: ";
+		message += content.length();
+		message += "\r\n";
+		message += "\r\n";
+		message += content;
+
+		soc->send(message);
+
+		return true;
+	}
+
+	// Default answer
+
+	std::string content = "Hello from HelloSteimke RESTles API Server!\nRequested Path: '";
+	content += path + "'\n";
+
+	std::string message;
+
+	message += "HTTP/1.1 200 OK\r\n";
+	message += "Content-Type: text/plain\r\n";
+	message += "Content-Length: ";
+	message += content.length();
+	message += "\r\n";
+	message += "\r\n";
+	message += content;
+
+	soc->send(message);
+
 	return true;
+
+	// // create whole message
+	// snprintf(message, sizeof(message),
+	// 		 "HTTP/1.1 200 OK\r\n"
+	// 		 "Content-Type: text/plain\r\n"
+	// 		 "Content-Length: %d\r\n" // Always set Content-Length
+	// 		 "\r\n"
+	// 		 "%s",
+	// 		 content_length, content);
 }
 
 App::~App()

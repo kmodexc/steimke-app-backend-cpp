@@ -14,12 +14,14 @@ OBJS = 					\
 	ConHandle.o			\
 	DependencyService.o	\
 	HTTPSocket.o		\
+	Item.o				\
+	JSONSerializer.o	\
 	main.o
 OBJS_w_PATH = $(patsubst %,$(OBJPATH)/%,$(OBJS))
 INCPATH = include
 SRCPATH = src
 BINPATH = bin
-CPPFLAGS = -c -Wall -g -I$(INCPATH) -Imodules/libhttp/include
+CPPFLAGS = -c -Wall -g -I$(INCPATH) -Imodules/libhttp/include -Imodules/json/single_include
 
 build: $(PROG)
 
