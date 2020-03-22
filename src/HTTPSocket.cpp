@@ -14,6 +14,7 @@ HTTPSocket::HTTPSocket(){
 
 void HTTPSocket::init(IConHandler *handler, int port)
 {
+	this->conhandler = handler;
 	memset(options, 0, sizeof(options));
 	memset(&callbacks, 0, sizeof(callbacks));
 	memset(str_port, 0, sizeof(str_port));

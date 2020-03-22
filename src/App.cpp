@@ -14,6 +14,7 @@ bool App::initialize()
 {
 	soc = DependencyService::getHttpSocket();
 	soc->init(this, 10001);
+	cout << "Initialized Socket on port 10001" << endl;
 	return true;
 }
 
@@ -21,7 +22,9 @@ void App::run()
 {
 	try
 	{
+		cout << "Starting Server" << endl;
 		soc->run();
+		cout << "Server finished without exception" << endl;
 	}
 	catch (exception exc)
 	{
@@ -49,6 +52,8 @@ bool App::get(IConHandle *soc, std::string path)
 			 content_length, content);
 
 	soc->send(message);
+
+	cout << "Incoming GET Request" << endl;
 
 	return true;
 }
