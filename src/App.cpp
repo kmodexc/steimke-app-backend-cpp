@@ -40,7 +40,7 @@ bool App::get(IConHandle *soc, std::string path)
 
 	// Prepare the message we're going to send
 	int content_length = snprintf(content, sizeof(content),
-								  "Hello from HelloSteimke RESTles API Server!");
+								  "Hello from HelloSteimke RESTles API Server!\n");
 
 	// create whole message
 	snprintf(message, sizeof(message),
