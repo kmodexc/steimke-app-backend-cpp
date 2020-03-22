@@ -23,7 +23,7 @@ void App::run(){
 	}
 }
 
-bool App::get(std::string path) {
+bool App::get(IHTTPSocket* soc,std::string path) {
 	return true;
 }
 
