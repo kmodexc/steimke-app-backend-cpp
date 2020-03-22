@@ -6,7 +6,8 @@ vpath %.o obj
 
 PROG = rlserv
 CC = g++
-LDFLAGS = -Lmodules/libhttp -l/libhttp
+LD = g++
+LDFLAGS = -Lmodules/libhttp -l/libhttp -lpthread -ldl
 OBJPATH = obj
 OBJS = \
 	main.o 				\
@@ -29,7 +30,7 @@ init:
 	$(CC) $(CPPFLAGS) -o $(OBJPATH)/$@ $<
 
 $(PROG): $(OBJS) init
-	$(CC) -o $(BINPATH)/$(PROG) $(LDFLAGS) $(OBJS_w_PATH)
+	$(LD) -o $(BINPATH)/$(PROG) $(OBJS_w_PATH) $(LDFLAGS) 
 
 clean:
 	rm -f -r $(OBJPATH) $(BINPATH)

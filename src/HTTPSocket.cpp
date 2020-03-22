@@ -1,50 +1,53 @@
 #include "HTTPSocket.h"
+#include <libhttp.h>
 
 namespace rls
 {
 
 void HTTPSocket::init(IConHandler *handler, int port)
 {
-	memset(options,0,sizeof(options));
+	memset(options, 0, sizeof(options));
 
 	options[0].name = "listening_ports";
-	options[0].value = "10002";				// **********todo*************
+	options[0].value = "10002"; // **********todo*************
 
-    callbacks.begin_request = begin_request_handler;
+	callbacks.begin_request = HTTPSocket::begin_request_handler;
 }
 
 void HTTPSocket::run()
 {
-    ctx = httplib_start(&callbacks, NULL, options);
-    getchar();
+	ctx = httplib_start(&callbacks, this, options);
+	getchar();
 }
 void HTTPSocket::close()
 {
-    httplib_stop(ctx);
+	httplib_stop(ctx);
 }
 
-int begin_request_handler(lh_ctx_t *ctx,lh_con_t *con)
+int HTTPSocket::begin_request_handler(lh_ctx_t *ctx, lh_con_t *con)
 {
-    const lh_rqi_t *request_info = httplib_get_request_info(con);
-    char content[100];
+	const lh_rqi_t *request_info = httplib_get_request_info(con);
+	char content[100];
 
-    // Prepare the message we're going to send
-    int content_length = snprintf(content, sizeof(content),
-                                  "Hello from civetweb! Remote port: %d",
-                                  request_info->remote_port);
+	//HTTPSocket* sochet = (HTTPSocket*)(request_info->user_data);
 
-    // Send HTTP reply to the client
-    httplib_printf(ctx,con,
-              "HTTP/1.1 200 OK\r\n"
-              "Content-Type: text/plain\r\n"
-              "Content-Length: %d\r\n"        // Always set Content-Length
-              "\r\n"
-              "%s",
-              content_length, content);
+	// Prepare the message we're going to send
+	int content_length = snprintf(content, sizeof(content),
+								  "Hello from civetweb! Remote port: %d",
+								  request_info->remote_port);
 
-    // Returning non-zero tells civetweb that our function has replied to
-    // the client, and civetweb should not send client any more data.
-    return 1;
+	// Send HTTP reply to the client
+	httplib_printf(ctx, con,
+				   "HTTP/1.1 200 OK\r\n"
+				   "Content-Type: text/plain\r\n"
+				   "Content-Length: %d\r\n" // Always set Content-Length
+				   "\r\n"
+				   "%s",
+				   content_length, content);
+
+	// Returning non-zero tells civetweb that our function has replied to
+	// the client, and civetweb should not send client any more data.
+	return 1;
 }
 
 } // namespace rls
