@@ -15,15 +15,15 @@ DependencyService::~DependencyService(){
 }
 
 IHTTPSocket* DependencyService::getHttpSocket(){
-	if(_GlobDepServ.soc == nullptr)
-		_GlobDepServ.soc = new HTTPSocket();
-	return _GlobDepServ.soc;
+	if(soc == nullptr)
+		soc = new HTTPSocket();
+	return soc;
 }
 
 IJSONSerializer* DependencyService::getJSONSerializer(){
-	if(_GlobDepServ.ser == nullptr)
-		_GlobDepServ.ser = new JSONSerializer();
-	return _GlobDepServ.ser;
+	if(ser == nullptr)
+		ser = new JSONSerializer();
+	return ser;
 }
 
 }
