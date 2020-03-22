@@ -40,7 +40,7 @@ bool App::get(IConHandle *soc, std::string path)
 
 	// Prepare the message we're going to send
 	int content_length = snprintf(content, sizeof(content),
-								  "Hello from HelloSteimke RESTles API Server!\n");
+								  "Hello from HelloSteimke RESTles API Server!\nRequested Path: '%s'\n", path.c_str());
 
 	// create whole message
 	snprintf(message, sizeof(message),
@@ -54,6 +54,7 @@ bool App::get(IConHandle *soc, std::string path)
 	soc->send(message);
 
 	cout << "Incoming GET Request" << endl;
+	cout << "Requested Path: " << path << endl;
 
 	return true;
 }
