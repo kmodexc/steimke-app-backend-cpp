@@ -8,11 +8,13 @@ namespace rls
 App::App()
 {
 	soc = nullptr;
+	ser = nullptr;
 }
 
 bool App::initialize()
 {
-	soc = DependencyService::getHttpSocket();
+	soc = dep.getHttpSocket();
+	ser = dep.getJSONSerializer();
 	soc->init(this, 10001);
 	cout << "Initialized Socket on port 10001" << endl;
 	return true;

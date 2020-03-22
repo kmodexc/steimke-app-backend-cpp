@@ -6,6 +6,7 @@
 namespace rls{
 
 class App : public IConHandler{
+	DependencyService dep;
 	IHTTPSocket* soc;
 	IJSONSerializer* ser;
 public:
