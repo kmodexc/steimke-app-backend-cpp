@@ -4,6 +4,7 @@
 #include <string.h>
 #include <thread>
 #include <iostream>
+#include "ConHandle.h"
 
 namespace rls{
 
@@ -29,7 +30,6 @@ public:
 	HTTPSocket();
 	void init(IConHandler *handler, int port) override;
 	void run() override;
-	void send(std::string str) override;
 	void close() override;
 };
 

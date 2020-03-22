@@ -36,10 +36,6 @@ void HTTPSocket::run()
 	getchar();
 }
 
-void HTTPSocket::send(std::string str){
-	
-}
-
 void HTTPSocket::close()
 {
 	httplib_stop(ctx);
@@ -48,7 +44,6 @@ void HTTPSocket::close()
 int HTTPSocket::begin_request_handler(lh_ctx_t *ctx, lh_con_t *con)
 {
 	const lh_rqi_t *request_info = httplib_get_request_info(con);
-	char content[100];
 
 	HTTPSocket* socket = (HTTPSocket*)(request_info->user_data);
 
@@ -67,9 +62,9 @@ int HTTPSocket::begin_request_handler(lh_ctx_t *ctx, lh_con_t *con)
 				   "%s",
 				   content_length, content);
 	*/	
-
+	ConHandle ich(ctx,con);
 	if(socket->conhandler != nullptr){
-		return socket->conhandler->get(socket,request_info->local_uri);
+		return socket->conhandler->get(&ich,request_info->local_uri);
 	}
 
 	// Returning non-zero tells civetweb that our function has replied to

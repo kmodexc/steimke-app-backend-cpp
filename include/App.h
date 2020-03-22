@@ -10,7 +10,7 @@ public:
 	App();
 	bool initialize();
 	void run();
-	bool get(IHTTPSocket* soc,std::string path) override;
+	bool get(IConHandle* soc,std::string path) override;
 	virtual ~App();
 };
 

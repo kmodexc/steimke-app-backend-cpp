@@ -9,11 +9,12 @@ CC = g++
 LD = g++
 LDFLAGS = -Lmodules/libhttp -l/libhttp -lpthread -ldl
 OBJPATH = obj
-OBJS = \
-	main.o 				\
+OBJS = 					\
+	App.o 				\
+	ConHandle.o			\
 	DependencyService.o	\
-	App.o				\
-	HTTPSocket.o
+	HTTPSocket.o		\
+	main.o
 OBJS_w_PATH = $(patsubst %,$(OBJPATH)/%,$(OBJS))
 INCPATH = include
 SRCPATH = src

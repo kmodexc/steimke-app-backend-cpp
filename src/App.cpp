@@ -2,34 +2,61 @@
 
 using namespace std;
 
-namespace rls{
+namespace rls
+{
 
-App::App(){
+App::App()
+{
 	soc = nullptr;
 }
 
-bool App::initialize(){
+bool App::initialize()
+{
 	soc = DependencyService::getHttpSocket();
-	soc->init(this,10001);
+	soc->init(this, 10001);
 	return true;
 }
 
-void App::run(){
-	try{
+void App::run()
+{
+	try
+	{
 		soc->run();
-	}catch(exception exc){
+	}
+	catch (exception exc)
+	{
 		cerr << "Exception in Application trying to run soccet" << endl;
-		cerr << exc.what() << endl;bool get(std::string path);
+		cerr << exc.what() << endl;
 	}
 }
 
-bool App::get(IHTTPSocket* soc,std::string path) {
+bool App::get(IConHandle *soc, std::string path)
+{
+	char content[100];
+	char message[200];
+
+	// Prepare the message we're going to send
+	int content_length = snprintf(content, sizeof(content),
+								  "Hello from HelloSteimke RESTles API Server!");
+
+	// create whole message
+	snprintf(message, sizeof(message),
+			 "HTTP/1.1 200 OK\r\n"
+			 "Content-Type: text/plain\r\n"
+			 "Content-Length: %d\r\n" // Always set Content-Length
+			 "\r\n"
+			 "%s",
+			 content_length, content);
+
+	soc->send(message);
+
 	return true;
 }
 
-App::~App(){
-	if(soc != nullptr)
+App::~App()
+{
+	if (soc != nullptr)
 		soc->close();
 }
 
-}
+} // namespace rls
