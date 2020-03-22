@@ -4,13 +4,14 @@
 
 namespace rls{
 
-class App{
+class App : public IConHandler{
 	IHTTPSocket* soc;
 public:
 	App();
 	bool initialize();
 	void run();
-	~App();
+	bool get(std::string path);
+	virtual ~App();
 };
 
 }

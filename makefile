@@ -17,7 +17,7 @@ OBJS_w_PATH = $(patsubst %,$(OBJPATH)/%,$(OBJS))
 INCPATH = include
 SRCPATH = src
 BINPATH = bin
-CPPFLAGS = -c -Wall -g -I$(INCPATH)
+CPPFLAGS = -c -Wall -g -I$(INCPATH) -Imodules/libhttp/include
 
 build: $(PROG)
 
