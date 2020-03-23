@@ -9,6 +9,7 @@ class App : public IConHandler{
 	DependencyService dep;
 	IHTTPSocket* soc;
 	IJSONSerializer* ser;
+	IDataBase* db;
 public:
 	App();
 	bool initialize();

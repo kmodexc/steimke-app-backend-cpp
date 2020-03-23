@@ -9,12 +9,14 @@ App::App()
 {
 	soc = nullptr;
 	ser = nullptr;
+	db = nullptr;
 }
 
 bool App::initialize()
 {
 	soc = dep.getHttpSocket();
 	ser = dep.getJSONSerializer();
+	db = dep.getDataBase();
 	soc->init(this, 10001);
 	cout << "Initialized Socket on port 10001" << endl;
 	return true;
@@ -43,7 +45,11 @@ bool App::get(IConHandle *soc, std::string path)
 	// answer if item is requested
 	if (path.find("/api/item/") != 0)
 	{
-		Item it;
+		int itemid = 0;
+
+		sscanf(path.c_str(),"/api/item/%d",&itemid);
+
+		Item it = db->getItem(itemid);
 		std::string content = ser->toJSON(it);
 
 		std::string message;

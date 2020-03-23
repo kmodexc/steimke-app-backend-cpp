@@ -5,6 +5,7 @@ namespace rls{
 DependencyService::DependencyService(){
 	soc = nullptr;
 	ser = nullptr;
+	db = nullptr
 }
 
 DependencyService::~DependencyService(){
@@ -24,6 +25,12 @@ IJSONSerializer* DependencyService::getJSONSerializer(){
 	if(ser == nullptr)
 		ser = new JSONSerializer();
 	return ser;
+}
+
+IDataBase* DependencyService::getDataBase(){
+	if(db == nullptr)
+		db = new MockDataStore();// todo
+	return db;
 }
 
 }
