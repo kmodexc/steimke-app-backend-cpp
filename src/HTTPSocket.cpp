@@ -12,6 +12,11 @@ HTTPSocket::HTTPSocket(){
 	memset(str_port, 0, sizeof(str_port));
 }
 
+HTTPSocket::~HTTPSocket(){
+	if(ctx != nullptr)
+		close();
+}
+
 void HTTPSocket::init(IConHandler *handler, int port)
 {
 	this->conhandler = handler;
@@ -40,6 +45,7 @@ void HTTPSocket::run()
 void HTTPSocket::close()
 {
 	httplib_stop(ctx);
+	ctx = nullptr;
 }
 
 int HTTPSocket::begin_request_handler(lh_ctx_t *ctx, lh_con_t *con)

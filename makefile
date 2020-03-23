@@ -16,7 +16,8 @@ OBJS = 					\
 	HTTPSocket.o		\
 	Item.o				\
 	JSONSerializer.o	\
-	main.o
+	main.o				\
+	MockDataStore.o
 OBJS_w_PATH = $(patsubst %,$(OBJPATH)/%,$(OBJS))
 INCPATH = include
 SRCPATH = src

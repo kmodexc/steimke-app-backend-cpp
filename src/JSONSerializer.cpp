@@ -25,4 +25,8 @@ Item JSONSerializer::fromJSON(const std::string& str) {
 	return it;
 }
 
+JSONSerializer::~JSONSerializer(){
+	
+}
+
 }

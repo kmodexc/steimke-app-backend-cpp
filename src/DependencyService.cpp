@@ -5,13 +5,15 @@ namespace rls{
 DependencyService::DependencyService(){
 	soc = nullptr;
 	ser = nullptr;
-	db = nullptr
+	db = nullptr;
 }
 
 DependencyService::~DependencyService(){
 	if(soc != nullptr)
 		delete soc;
 	if(ser != nullptr)
+		delete ser;
+	if(db != nullptr)
 		delete ser;
 }
 

@@ -28,6 +28,7 @@ private:
 	// public interface
 public:
 	HTTPSocket();
+	~HTTPSocket() override;
 	void init(IConHandler *handler, int port) override;
 	void run() override;
 	void close() override;

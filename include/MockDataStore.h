@@ -6,6 +6,7 @@ namespace rls{
 class MockDataStore : public IDataBase{
 public:
 	Item getItem(int id) override;
+	~MockDataStore() override;
 };
 
 

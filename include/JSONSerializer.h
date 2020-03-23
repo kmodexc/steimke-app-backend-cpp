@@ -8,6 +8,7 @@ class JSONSerializer : public IJSONSerializer{
 public:
 	std::string toJSON(const Item& item) override;
 	Item fromJSON(const std::string&) override;
+	~JSONSerializer() override;
 };
 
 
