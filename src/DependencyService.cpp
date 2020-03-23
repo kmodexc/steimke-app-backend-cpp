@@ -9,12 +9,15 @@ DependencyService::DependencyService(){
 }
 
 DependencyService::~DependencyService(){
+	// ***************todo*********************
+	/*
 	if(soc != nullptr)
 		delete soc;
 	if(ser != nullptr)
 		delete ser;
 	if(db != nullptr)
 		delete ser;
+	*/
 }
 
 IHTTPSocket* DependencyService::getHttpSocket(){
@@ -31,7 +34,7 @@ IJSONSerializer* DependencyService::getJSONSerializer(){
 
 IDataBase* DependencyService::getDataBase(){
 	if(db == nullptr)
-		db = new MockDataStore();// todo
+		db = new MockDataStore();
 	return db;
 }
 

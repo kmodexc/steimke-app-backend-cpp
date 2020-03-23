@@ -43,24 +43,26 @@ bool App::get(IConHandle *soc, std::string path)
 	cout << "Requested Path: " << path << endl;
 
 	// answer if item is requested
-	if (path.find("/api/item/") != 0)
+	if (path.find("/api/item/") == 0)
 	{
 		int itemid = 0;
 
-		sscanf(path.c_str(),"/api/item/%d",&itemid);
+		sscanf(path.c_str(), "/api/item/%d", &itemid);
 
 		Item it = db->getItem(itemid);
 		std::string content = ser->toJSON(it);
 
-		std::string message;
+		std::stringstream ss;
+		ss << "HTTP/1.1 200 OK\r\n";
+		ss << "Content-Type: text/plain\r\n";
+		ss << "Content-Length: " << content.length() << "\r\n";
+		ss << "\r\n";
+		ss << content;
 
-		message += "HTTP/1.1 200 OK\r\n";
-		message += "Content-Type: text/plain\r\n";
-		message += "Content-Length: ";
-		message += content.length();
-		message += "\r\n";
-		message += "\r\n";
-		message += content;
+		std::string message = ss.str();
+
+		cout << "Sending this:" << endl;
+		cout << message << endl;
 
 		soc->send(message);
 
@@ -72,15 +74,17 @@ bool App::get(IConHandle *soc, std::string path)
 	std::string content = "Hello from HelloSteimke RESTles API Server!\nRequested Path: '";
 	content += path + "'\n";
 
-	std::string message;
+	std::stringstream ss;
+	ss << "HTTP/1.1 200 OK\r\n";
+	ss << "Content-Type: text/plain\r\n";
+	ss << "Content-Length: " << content.length() << "\r\n";
+	ss << "\r\n";
+	ss << content;
 
-	message += "HTTP/1.1 200 OK\r\n";
-	message += "Content-Type: text/plain\r\n";
-	message += "Content-Length: ";
-	message += content.length();
-	message += "\r\n";
-	message += "\r\n";
-	message += content;
+	std::string message = ss.str();
+
+	cout << "Sending this:" << endl;
+	cout << message << endl;
 
 	soc->send(message);
 
