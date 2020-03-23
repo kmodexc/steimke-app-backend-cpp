@@ -12,6 +12,7 @@ OBJPATH = obj
 OBJS = 					\
 	App.o 				\
 	ConHandle.o			\
+	DBItem.o			\
 	DependencyService.o	\
 	HTTPSocket.o		\
 	Item.o				\

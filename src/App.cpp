@@ -69,6 +69,29 @@ bool App::get(IConHandle *soc, std::string path)
 		return true;
 	}
 
+	// answer if item is requested
+	if (path.find("/api/existingitems") == 0)
+	{
+		std::vector<Item> it = db->getItems();
+		std::string content = ser->toJSON(it);
+
+		std::stringstream ss;
+		ss << "HTTP/1.1 200 OK\r\n";
+		ss << "Content-Type: text/plain\r\n";
+		ss << "Content-Length: " << content.length() << "\r\n";
+		ss << "\r\n";
+		ss << content;
+
+		std::string message = ss.str();
+
+		cout << "Sending this:" << endl;
+		cout << message << endl;
+
+		soc->send(message);
+
+		return true;
+	}
+
 	// Default answer
 
 	std::string content = "Hello from HelloSteimke RESTles API Server!\nRequested Path: '";

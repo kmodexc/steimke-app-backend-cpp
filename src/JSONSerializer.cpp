@@ -18,6 +18,15 @@ std::string JSONSerializer::toJSON(const Item& item) {
 	return j.dump();
 }
 
+std::string JSONSerializer::toJSON(const std::vector<Item>& items) {
+	std::vector<int> idlist;
+	for(auto it : items){
+		idlist.push_back(it.getID());
+	}
+	json j = idlist;
+	return j.dump();
+}
+
 Item JSONSerializer::fromJSON(const std::string& str) {
 	auto j = json::parse(str);
 	ItemState state = (ItemState)j["state"].get<int>();
