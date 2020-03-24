@@ -20,6 +20,15 @@ SQLDataBase::SQLDataBase()
 {
 	stdlock(mtx);
 	std::string fqn = db_file_path + db_file_name;
+
+	// check if db already exists
+	bool db_exist = false;
+	ifstream dbfstr(fqn);
+	if (dbfstr.good())
+		db_exist = true;
+	dbfstr.close();
+
+	// open db
 	int rc = sqlite3_open(fqn.c_str(), &db);
 	if (rc)
 	{
@@ -27,6 +36,31 @@ SQLDataBase::SQLDataBase()
 		sqlite3_close(db);
 		db = nullptr;
 		return;
+	}
+
+	if (!db_exist)
+	{
+		// create table if db was created
+		const char command[] = "CREATE TABLE Items "
+							   "ID 		INT 	PRIMARY KEY		NOT NULL,"
+							   "state		INT		,"
+							   "name		TEXT	,"
+							   "shortdesc	TEXT	,"
+							   "desc		TEXT	,"
+							   "creaid		INT		,"
+							   "assid		INT		,"
+							   "prio		INT		,"
+							   "wl			INT		";
+
+		sqlite3_stmt *stmt;
+		int rc = sqlite3_prepare_v2(db, command, sizeof(command), &stmt, nullptr);
+		CHECK_SQL_ERROR(rc, );
+
+		rc = sqlite3_step(stmt);
+		CHECK_SQL_ERROR(rc, );
+
+		rc = sqlite3_finalize(stmt);
+		CHECK_SQL_ERROR(rc, );
 	}
 }
 void SQLDataBase::addItem(Item it)
@@ -38,35 +72,36 @@ void SQLDataBase::addItem(Item it)
 	}
 	stdlock(mtx);
 
-	const char command[] = "INSERT INTO Items (ID,state,name,shortdesc,desc,creaid,assid,prio,wl) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9)";
+	const char command[] = "INSERT INTO Items (ID,state,name,shortdesc,desc,creaid,assid,prio,wl) "
+						   "VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9)";
 	sqlite3_stmt *stmt;
 	int rc = sqlite3_prepare_v2(db, command, sizeof(command), &stmt, nullptr);
-	CHECK_SQL_ERROR(rc,);
+	CHECK_SQL_ERROR(rc, );
 
 	rc = sqlite3_bind_int(stmt, 1, it.getID());
-	CHECK_SQL_ERROR(rc,);
+	CHECK_SQL_ERROR(rc, );
 	rc = sqlite3_bind_int(stmt, 2, (int)it.getState());
-	CHECK_SQL_ERROR(rc,);
-	rc = sqlite3_bind_text(stmt, 3, it.getName().c_str(),it.getName().length(),SQLITE_TRANSIENT);
-	CHECK_SQL_ERROR(rc,);
-	rc = sqlite3_bind_text(stmt, 4, it.getShortDiscription().c_str(),it.getShortDiscription().length(),SQLITE_TRANSIENT);
-	CHECK_SQL_ERROR(rc,);
-	rc = sqlite3_bind_text(stmt, 5, it.getDescription().c_str(),it.getDescription().length(),SQLITE_TRANSIENT);
-	CHECK_SQL_ERROR(rc,);
+	CHECK_SQL_ERROR(rc, );
+	rc = sqlite3_bind_text(stmt, 3, it.getName().c_str(), it.getName().length(), SQLITE_TRANSIENT);
+	CHECK_SQL_ERROR(rc, );
+	rc = sqlite3_bind_text(stmt, 4, it.getShortDiscription().c_str(), it.getShortDiscription().length(), SQLITE_TRANSIENT);
+	CHECK_SQL_ERROR(rc, );
+	rc = sqlite3_bind_text(stmt, 5, it.getDescription().c_str(), it.getDescription().length(), SQLITE_TRANSIENT);
+	CHECK_SQL_ERROR(rc, );
 	rc = sqlite3_bind_int(stmt, 6, it.getCreatorID());
-	CHECK_SQL_ERROR(rc,);
+	CHECK_SQL_ERROR(rc, );
 	rc = sqlite3_bind_int(stmt, 7, it.getAssignedID());
-	CHECK_SQL_ERROR(rc,);
+	CHECK_SQL_ERROR(rc, );
 	rc = sqlite3_bind_int(stmt, 8, it.getPriority());
-	CHECK_SQL_ERROR(rc,);
+	CHECK_SQL_ERROR(rc, );
 	rc = sqlite3_bind_int(stmt, 9, it.getWorkload());
-	CHECK_SQL_ERROR(rc,);
+	CHECK_SQL_ERROR(rc, );
 
 	rc = sqlite3_step(stmt);
-	CHECK_SQL_ERROR(rc,);
+	CHECK_SQL_ERROR(rc, );
 
 	rc = sqlite3_finalize(stmt);
-	CHECK_SQL_ERROR(rc,);
+	CHECK_SQL_ERROR(rc, );
 }
 Item SQLDataBase::getItem(int id)
 {
@@ -120,11 +155,12 @@ std::vector<int> SQLDataBase::getIDs()
 
 	std::vector<int> retval;
 
-	do{
+	do
+	{
 		CHECK_SQL_ERROR(rc, std::vector<int>());
 		rc = sqlite3_step(stmt);
-		retval.push_back(sqlite3_column_int(stmt,0));
-	}while(rc != SQLITE_DONE);
+		retval.push_back(sqlite3_column_int(stmt, 0));
+	} while (rc != SQLITE_DONE);
 
 	rc = sqlite3_finalize(stmt);
 	CHECK_SQL_ERROR(rc, std::vector<int>());
@@ -138,7 +174,8 @@ std::vector<Item> SQLDataBase::getItems()
 
 	std::vector<Item> retval;
 
-	for(auto id : ids){
+	for (auto id : ids)
+	{
 		retval.push_back(getItem(id));
 	}
 
@@ -162,20 +199,20 @@ void SQLDataBase::deleteItem(int id)
 	char command[] = "DELETE FROM Items WHERE ID=?1";
 	sqlite3_stmt *stmt;
 	int rc = sqlite3_prepare_v2(db, command, sizeof(command), &stmt, nullptr);
-	CHECK_SQL_ERROR(rc,);
+	CHECK_SQL_ERROR(rc, );
 
 	rc = sqlite3_bind_int(stmt, 1, id);
-	CHECK_SQL_ERROR(rc,);
+	CHECK_SQL_ERROR(rc, );
 
 	rc = sqlite3_step(stmt);
-	CHECK_SQL_ERROR(rc,);
+	CHECK_SQL_ERROR(rc, );
 
 	rc = sqlite3_finalize(stmt);
-	CHECK_SQL_ERROR(rc,);
+	CHECK_SQL_ERROR(rc, );
 }
 SQLDataBase::~SQLDataBase()
 {
-	mtx.try_lock();	// dont really lock here to try safe db in case of exception
+	mtx.try_lock(); // dont really lock here to try safe db in case of exception
 	if (db != nullptr)
 		sqlite3_close(db);
 }

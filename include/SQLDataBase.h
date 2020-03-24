@@ -3,6 +3,7 @@
 #include <sqlite3.h>
 #include <iostream>
 #include <mutex>
+#include <fstream>
 
 namespace rls{
 
@@ -14,12 +15,12 @@ private:
 	std::mutex mtx;
 public:
 	SQLDataBase();
-	void addItem(Item);
+	void addItem(Item) override;
 	Item getItem(int id) override;
-	std::vector<int> getIDs();
+	std::vector<int> getIDs() override;
 	std::vector<Item> getItems() override;
-	void updateItem(Item);
-	void deleteItem(int id);
+	void updateItem(Item) override;
+	void deleteItem(int id) override;
 	~SQLDataBase() override;
 
 public:
