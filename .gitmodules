@@ -4,3 +4,6 @@
 [submodule "modules/json"]
 	path = modules/json
 	url = https://github.com/nlohmann/json.git
+[submodule "modules/sqlite"]
+	path = modules/sqlite
+	url = https://github.com/sqlite/sqlite.git
