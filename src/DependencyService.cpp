@@ -1,4 +1,8 @@
 #include "DependencyService.h"
+#include "MockDataStore.h"
+#include "SQLDataBase.h"
+#include "HTTPSocket.h"
+#include "JSONSerializer.h"
 
 namespace rls{
 

@@ -1,6 +1,8 @@
 #include "HTTPSocket.h"
 #include <libhttp.h>
 
+using namespace std;
+
 namespace rls
 {
 
@@ -53,30 +55,58 @@ int HTTPSocket::begin_request_handler(lh_ctx_t *ctx, lh_con_t *con)
 	const lh_rqi_t *request_info = httplib_get_request_info(con);
 
 	HTTPSocket* socket = (HTTPSocket*)(request_info->user_data);
-
-	/*
-	// Prepare the message we're going to send
-	int content_length = snprintf(content, sizeof(content),
-								  "Hello from civetweb! Remote port: %d",
-								  request_info->remote_port);
-
-	// Send HTTP reply to the client
-	httplib_printf(ctx, con,
-				   "HTTP/1.1 200 OK\r\n"
-				   "Content-Type: text/plain\r\n"
-				   "Content-Length: %d\r\n" // Always set Content-Length
-				   "\r\n"
-				   "%s",
-				   content_length, content);
-	*/	
 	ConHandle ich(ctx,con);
-	if(socket->conhandler != nullptr){
-		return socket->conhandler->get(&ich,request_info->local_uri);
+
+	std::string req_method = request_info->request_method;
+
+	cout << "Incoming " << req_method << " request" << endl;
+
+	if(req_method == "GET"){
+		if(socket->conhandler != nullptr){
+			return socket->conhandler->get(&ich,request_info->local_uri);
+		}
+	}
+
+	else if(req_method == "POST"){
+		std::string content = getContent(ctx,con);
+		if(socket->conhandler != nullptr){
+			return socket->conhandler->post(&ich,request_info->local_uri,content);
+		}
+	}
+
+	else if(req_method == "PUT"){
+		std::string content  = getContent(ctx,con);
+		if(socket->conhandler != nullptr){
+			return socket->conhandler->put(&ich,request_info->local_uri,content);
+		}
+	}
+
+	else if(req_method == "DELETE"){
+		if(socket->conhandler != nullptr){
+			return socket->conhandler->del(&ich,request_info->local_uri);
+		}
 	}
 
 	// Returning non-zero tells civetweb that our function has replied to
 	// the client, and civetweb should not send client any more data.
 	return 0;
+}
+
+std::string HTTPSocket::getContent(lh_ctx_t *ctx,lh_con_t* con)
+{
+	std::string content;
+	if(httplib_get_request_info(con)->content_length > 0){
+		cout << "found data with len " << httplib_get_request_info(con)->content_length << endl;
+		char buffer[100];
+		memset(buffer,0,sizeof(buffer));
+		while(httplib_read(ctx,con,buffer,sizeof(buffer)-2)){
+			content += buffer;
+			memset(buffer,0,sizeof(buffer));
+		}
+		cout << content << endl;
+	}
+	else cout << "no content" << endl;
+	return content;
 }
 
 } // namespace rls

@@ -24,7 +24,8 @@ private:
 	// intern functions
 private:
 	static int begin_request_handler(lh_ctx_t *ctx,lh_con_t *con);
-
+protected:
+	static std::string getContent(lh_ctx_t *ctx,lh_con_t* con);
 	// public interface
 public:
 	HTTPSocket();

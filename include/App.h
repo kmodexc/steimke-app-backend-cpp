@@ -11,12 +11,20 @@ class App : public IConHandler{
 	IHTTPSocket* soc;
 	IJSONSerializer* ser;
 	IDataBase* db;
+protected:
+	static void ok(IConHandle* con,std::string content);
 public:
 	App();
 	bool initialize();
 	void run();
 	bool get(IConHandle* soc,std::string path) override;
+	bool put(IConHandle* soc,std::string path,std::string content) override;
+	bool post(IConHandle* soc,std::string path,std::string content) override;
+	bool del(IConHandle* soc,std::string path) override;
 	virtual ~App();
+
+public:
+	const int PORT = 30000;
 };
 
 }
