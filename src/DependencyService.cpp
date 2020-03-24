@@ -34,7 +34,7 @@ IJSONSerializer* DependencyService::getJSONSerializer(){
 
 IDataBase* DependencyService::getDataBase(){
 	if(db == nullptr)
-		db = new MockDataStore();
+		db = new SQLDataBase();
 	return db;
 }
 

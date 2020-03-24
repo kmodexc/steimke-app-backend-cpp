@@ -5,6 +5,7 @@
 #include "JSONSerializer.h"
 #include "IDataBase.h"
 #include "MockDataStore.h"
+#include "SQLDataBase.h"
 
 namespace rls{
 

@@ -7,7 +7,7 @@ vpath %.o obj
 PROG = rlserv
 CC = g++
 LD = g++
-LDFLAGS = -Lmodules/libhttp -l/libhttp -lpthread -ldl
+LDFLAGS = -Lmodules/libhttp -l/libhttp -lpthread -ldl -lsqlite3
 OBJPATH = obj
 OBJS = 					\
 	App.o 				\
@@ -18,7 +18,8 @@ OBJS = 					\
 	Item.o				\
 	JSONSerializer.o	\
 	main.o				\
-	MockDataStore.o
+	MockDataStore.o		\
+	SQLDataBase.o
 OBJS_w_PATH = $(patsubst %,$(OBJPATH)/%,$(OBJS))
 INCPATH = include
 SRCPATH = src
