@@ -1,13 +1,15 @@
 #include "JSONSerializer.h"
 
-namespace rls{
+namespace rls
+{
 
 using json = nlohmann::json;
 
-std::string JSONSerializer::toJSON(const Item& item) {
+std::string JSONSerializer::toJSON(const Item &item)
+{
 	json j;
 	j["id"] = item.getID();
-	j["state"] = (int)item.getState();
+	j["state"] = item.getState();
 	j["name"] = item.getName();
 	j["shortdesc"] = item.getShortDiscription();
 	j["desc"] = item.getDescription();
@@ -18,24 +20,54 @@ std::string JSONSerializer::toJSON(const Item& item) {
 	return j.dump();
 }
 
-std::string JSONSerializer::toJSON(const std::vector<Item>& items) {
+std::string JSONSerializer::toJSON(const std::vector<Item> &items)
+{
 	std::vector<int> idlist;
-	for(auto it : items){
+	for (auto it : items)
+	{
 		idlist.push_back(it.getID());
 	}
 	json j = idlist;
 	return j.dump();
 }
 
-Item JSONSerializer::fromJSON(const std::string& str) {
+Item JSONSerializer::fromJSON(const std::string &str)
+{
 	auto j = json::parse(str);
-	ItemState state = (ItemState)j["state"].get<int>();
-	Item it(j["id"].get<int>(),state,j["name"].get<std::string>(),j["shortdesc"].get<std::string>(),j["desc"].get<std::string>(),j["assignedId"].get<int>(),j["creatorId"].get<int>(),j["priority"].get<int>(),j["workload"].get<int>());
+	int id = -1;
+	if(!j["id"].is_null())
+		id = j["id"].get<int>();
+	ItemState state = ItemState::created;
+	if(!j["state"].is_null())
+		std::string str_state = j["state"].get<std::string>();
+	std::string name;
+	if(!j["name"].is_null())
+		name = j["name"].get<std::string>();
+	std::string shortdesc;
+	if(!j["shortdesc"].is_null())
+		shortdesc = j["shortdesc"].get<std::string>();
+	std::string desc;
+	if(!j["desc"].is_null())
+		desc = j["desc"].get<std::string>();
+	int assid = -1;
+	if(!j["assignedId"].is_null())
+		assid = j["assignedId"].get<int>();
+	int creaid = -1;
+	if(!j["creatorId"].is_null())
+		creaid = j["creatorId"].get<int>();
+	int prio = -1;
+	if(!j["priority"].is_null())
+		prio = j["priority"].get<int>();
+	int wl = -1;
+	if(!j["workload"].is_null())
+		wl = j["workload"].get<int>();
+	
+	Item it(id,state,name,shortdesc,desc,assid,creaid,prio,wl);
 	return it;
 }
 
-JSONSerializer::~JSONSerializer(){
-	
+JSONSerializer::~JSONSerializer()
+{
 }
 
-}
+} // namespace rls

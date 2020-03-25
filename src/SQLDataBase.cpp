@@ -1,13 +1,15 @@
 #include "SQLDataBase.h"
 
-#define CHECK_SQL_ERROR(returncode, errorRetVal)             \
-	if (returncode != SQLITE_OK)                             \
-	{                                                        \
-		cerr << "SQL error: " << sqlite3_errmsg(db) << endl; \
-		sqlite3_close(db);                                   \
-		db = nullptr;                                        \
-		return errorRetVal;                                  \
+#define CHECK_SQL_ERROR(returncode, errorRetVal)                                          \
+	if (returncode != SQLITE_OK && returncode != SQLITE_DONE && returncode != SQLITE_ROW) \
+	{                                                                                     \
+		cerr << "SQL error(" << returncode << "): " << sqlite3_errmsg(db) << endl;        \
+		sqlite3_close(db);                                                                \
+		db = nullptr;                                                                     \
+		return errorRetVal;                                                               \
 	}
+
+#define TO_CPP_STRING(in) (in == nullptr ? std::string("null") : (const char*)in)
 
 using namespace std;
 
@@ -18,7 +20,7 @@ typedef std::unique_lock<std::mutex> stdlock;
 
 SQLDataBase::SQLDataBase()
 {
-	stdlock(mtx);
+	stdlock lock(mtx);
 	std::string fqn = db_file_path + db_file_name;
 
 	// check if db already exists
@@ -30,37 +32,34 @@ SQLDataBase::SQLDataBase()
 
 	// open db
 	int rc = sqlite3_open(fqn.c_str(), &db);
-	if (rc)
-	{
-		cerr << "Can't open database: " << sqlite3_errmsg(db) << endl;
-		sqlite3_close(db);
-		db = nullptr;
-		return;
-	}
+	CHECK_SQL_ERROR(rc, );
 
 	if (!db_exist)
 	{
 		// create table if db was created
-		const char command[] = "CREATE TABLE Items "
-							   "ID 		INT 	PRIMARY KEY		NOT NULL,"
-							   "state		INT		,"
-							   "name		TEXT	,"
-							   "shortdesc	TEXT	,"
-							   "desc		TEXT	,"
-							   "creaid		INT		,"
-							   "assid		INT		,"
-							   "prio		INT		,"
-							   "wl			INT		";
+		const char command[] = "CREATE TABLE Items("
+							   "ID 			INT		,"
+							   "state		int		,"
+							   "name		text	,"
+							   "shortdesc	text	,"
+							   "desc		text	,"
+							   "creaid		int		,"
+							   "assid		int		,"
+							   "prio		int		,"
+							   "wl			int		)";
 
-		sqlite3_stmt *stmt;
-		int rc = sqlite3_prepare_v2(db, command, sizeof(command), &stmt, nullptr);
-		CHECK_SQL_ERROR(rc, );
-
-		rc = sqlite3_step(stmt);
-		CHECK_SQL_ERROR(rc, );
-
-		rc = sqlite3_finalize(stmt);
-		CHECK_SQL_ERROR(rc, );
+		char *errmsg;
+		if (sqlite3_exec(db, command, 0, nullptr, &errmsg) != SQLITE_OK)
+		{
+			cerr << "error creating table" << endl;
+			if (errmsg)
+			{
+				cerr << "errormessage: " << errmsg << endl;
+			}
+			sqlite3_close(db);
+			db = nullptr;
+			return;
+		}
 	}
 }
 void SQLDataBase::addItem(Item it)
@@ -70,7 +69,7 @@ void SQLDataBase::addItem(Item it)
 		cerr << "Database closed" << endl;
 		return;
 	}
-	stdlock(mtx);
+	stdlock lock(mtx);
 
 	const char command[] = "INSERT INTO Items (ID,state,name,shortdesc,desc,creaid,assid,prio,wl) "
 						   "VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9)";
@@ -110,9 +109,9 @@ Item SQLDataBase::getItem(int id)
 		cerr << "Database closed" << endl;
 		return Item();
 	}
-	stdlock(mtx);
+	stdlock lock(mtx);
 
-	const char command[] = "SELECT * WHERE ID=?1";
+	const char command[] = "SELECT * FROM Items WHERE ID=?1";
 	sqlite3_stmt *stmt;
 	int rc = sqlite3_prepare_v2(db, command, sizeof(command), &stmt, nullptr);
 	CHECK_SQL_ERROR(rc, Item());
@@ -124,9 +123,9 @@ Item SQLDataBase::getItem(int id)
 	CHECK_SQL_ERROR(rc, Item());
 
 	ItemState state = (ItemState)sqlite3_column_int(stmt, 1);
-	std::string name = (const char *)sqlite3_column_text(stmt, 2);
-	std::string shortdesc = (const char *)sqlite3_column_text(stmt, 3);
-	std::string desc = (const char *)sqlite3_column_text(stmt, 4);
+	std::string name = TO_CPP_STRING(sqlite3_column_text(stmt, 2));
+	std::string shortdesc = TO_CPP_STRING(sqlite3_column_text(stmt, 3));
+	std::string desc = TO_CPP_STRING(sqlite3_column_text(stmt, 4));
 	int creaid = sqlite3_column_int(stmt, 5);
 	int assid = sqlite3_column_int(stmt, 6);
 	int prio = sqlite3_column_int(stmt, 7);
@@ -146,7 +145,7 @@ std::vector<int> SQLDataBase::getIDs()
 		cerr << "Database closed" << endl;
 		return std::vector<int>();
 	}
-	stdlock(mtx);
+	stdlock lock(mtx);
 
 	char command[] = "SELECT ID FROM Items";
 	sqlite3_stmt *stmt;
@@ -159,12 +158,13 @@ std::vector<int> SQLDataBase::getIDs()
 	{
 		CHECK_SQL_ERROR(rc, std::vector<int>());
 		rc = sqlite3_step(stmt);
-		retval.push_back(sqlite3_column_int(stmt, 0));
+		if(rc == SQLITE_ROW)
+			retval.push_back(sqlite3_column_int(stmt, 0));
 	} while (rc != SQLITE_DONE);
 
 	rc = sqlite3_finalize(stmt);
 	CHECK_SQL_ERROR(rc, std::vector<int>());
-
+	cout << "Found " << retval.size() << " Item in DB" << endl;
 	return retval;
 }
 std::vector<Item> SQLDataBase::getItems()
@@ -178,7 +178,7 @@ std::vector<Item> SQLDataBase::getItems()
 	{
 		retval.push_back(getItem(id));
 	}
-
+	cout << "Return " << retval.size() << " Item" << endl;
 	return retval;
 }
 void SQLDataBase::updateItem(Item it)
@@ -194,7 +194,7 @@ void SQLDataBase::deleteItem(int id)
 		cerr << "Database closed" << endl;
 		return;
 	}
-	stdlock(mtx);
+	stdlock lock(mtx);
 
 	char command[] = "DELETE FROM Items WHERE ID=?1";
 	sqlite3_stmt *stmt;

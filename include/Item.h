@@ -4,8 +4,12 @@
 namespace rls{
 
 enum class ItemState{
-	notassigned,
-	assigned
+	created,
+	assigned,
+	inprogress,
+	finished,
+	paused,
+	aborted
 };
 
 class Item{

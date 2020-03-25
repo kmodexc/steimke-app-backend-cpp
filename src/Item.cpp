@@ -5,7 +5,7 @@ namespace rls
 
 Item::Item(){
 	this->id = -1;
-	this->state = ItemState::notassigned;
+	this->state = ItemState::created;
 	this->assid = -1;
 	this->creaid = -1;
 	this->prio = 0;

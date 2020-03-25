@@ -30,7 +30,7 @@ void App::run()
 		soc->run();
 		cout << "Server finished without exception" << endl;
 	}
-	catch (exception exc)
+	catch (exception &exc)
 	{
 		cerr << "Exception in Application trying to run soccet" << endl;
 		cerr << exc.what() << endl;

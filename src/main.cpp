@@ -16,7 +16,7 @@ int main(void)
 			cerr << "Application didnt initialize successful" << endl;
 		}
 		
-	}catch(exception exc){
+	}catch(exception &exc){
 		cerr << "Exception in main" << endl;
 		cerr << exc.what() << endl;
 	}

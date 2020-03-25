@@ -60,6 +60,8 @@ int HTTPSocket::begin_request_handler(lh_ctx_t *ctx, lh_con_t *con)
 	std::string req_method = request_info->request_method;
 
 	cout << "Incoming " << req_method << " request" << endl;
+	for(int cnt=0;cnt < request_info->num_headers ; cnt++)
+		cout << "Header " << request_info->http_headers[cnt].name << "\t" << request_info->http_headers[cnt].value << endl;
 
 	if(req_method == "GET"){
 		if(socket->conhandler != nullptr){

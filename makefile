@@ -19,6 +19,8 @@ OBJS = 					\
 	JSONSerializer.o	\
 	main.o				\
 	MockDataStore.o		\
+	SimpleConHandle.o	\
+	SimpleSocket.o		\
 	SQLDataBase.o
 OBJS_w_PATH = $(patsubst %,$(OBJPATH)/%,$(OBJS))
 INCPATH = include

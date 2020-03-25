@@ -3,6 +3,7 @@
 #include "SQLDataBase.h"
 #include "HTTPSocket.h"
 #include "JSONSerializer.h"
+#include "SimpleSocket.h"
 
 namespace rls{
 
@@ -26,7 +27,7 @@ DependencyService::~DependencyService(){
 
 IHTTPSocket* DependencyService::getHttpSocket(){
 	if(soc == nullptr)
-		soc = new HTTPSocket();
+		soc = new SimpleSocket();
 	return soc;
 }
 
