@@ -28,14 +28,16 @@ void HTTPSocket::init(IConHandler *handler, int port)
 
 	options[0].name = "listening_ports";
 	options[0].value = str_port;
-	options[1].name = "ssl_certificate";
-	options[1].value = "server.pem";
-	options[2].name = "ssl_protocol_version";
-	options[2].value = "3";
+	// options[1].name = "ssl_certificate";
+	// options[1].value = "server.pem";
+	// options[2].name = "ssl_protocol_version";
+	// options[2].value = "3";
 
 	snprintf(str_port,sizeof(str_port),"%d",port);
 
 	callbacks.begin_request = HTTPSocket::begin_request_handler;
+
+	cout << "Initialized Socket on port " << port << endl;
 }
 
 void HTTPSocket::run()
@@ -69,33 +71,31 @@ int HTTPSocket::begin_request_handler(lh_ctx_t *ctx, lh_con_t *con)
 
 	if(req_method == "GET"){
 		if(socket->conhandler != nullptr){
-			return socket->conhandler->get(&ich,request_info->local_uri);
+			socket->conhandler->get(&ich,request_info->local_uri);
 		}
 	}
 
 	else if(req_method == "POST"){
 		std::string content = getContent(ctx,con);
 		if(socket->conhandler != nullptr){
-			return socket->conhandler->post(&ich,request_info->local_uri,content);
+			socket->conhandler->post(&ich,request_info->local_uri,content);
 		}
 	}
 
 	else if(req_method == "PUT"){
 		std::string content  = getContent(ctx,con);
 		if(socket->conhandler != nullptr){
-			return socket->conhandler->put(&ich,request_info->local_uri,content);
+			socket->conhandler->put(&ich,request_info->local_uri,content);
 		}
 	}
 
 	else if(req_method == "DELETE"){
 		if(socket->conhandler != nullptr){
-			return socket->conhandler->del(&ich,request_info->local_uri);
+			socket->conhandler->del(&ich,request_info->local_uri);
 		}
 	}
 
-	// Returning non-zero tells civetweb that our function has replied to
-	// the client, and civetweb should not send client any more data.
-	return 0;
+	return 1;	// make shure that httpserver doesent try to load something
 }
 
 std::string HTTPSocket::getContent(lh_ctx_t *ctx,lh_con_t* con)

@@ -12,7 +12,7 @@ MockDataStore::MockDataStore()
 	items.push_back(DBItem("e"));
 }
 
-Item MockDataStore::getItem(int id)
+Item MockDataStore::get(int id)
 {
 	for (Item &i : items)
 	{
@@ -22,7 +22,7 @@ Item MockDataStore::getItem(int id)
 	return Item();
 }
 
-std::vector<Item> MockDataStore::getItems()
+std::vector<Item> MockDataStore::getAll()
 {
 	return items;
 }

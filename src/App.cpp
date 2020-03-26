@@ -9,16 +9,21 @@ App::App()
 {
 	soc = nullptr;
 	ser = nullptr;
-	db = nullptr;
+	dbitem = nullptr;
+	dbuser = nullptr;
 }
 
-bool App::initialize()
+bool App::initialize(int argc,char *argv[])
 {
+	int port = PORT;
+	if (argc == 2){
+		port = atoi(argv[1]);
+	}
 	soc = dep.getHttpSocket();
 	ser = dep.getJSONSerializer();
-	db = dep.getDataBase();
-	soc->init(this, PORT);
-	cout << "Initialized Socket on port " << PORT << endl;
+	dbitem = dep.getDataBaseItem();
+	dbuser = dep.getDataBaseUser();
+	soc->init(this, port);
 	return true;
 }
 
@@ -54,9 +59,6 @@ void App::ok(IConHandle* soc, std::string content)
 }
 bool App::get(IConHandle *soc, std::string path)
 {
-	cout << "Incoming GET Request" << endl;
-	cout << "Requested Path: " << path << endl;
-
 	// answer if item is requested
 	if (path.find("/api/item/") == 0)
 	{
@@ -64,7 +66,7 @@ bool App::get(IConHandle *soc, std::string path)
 
 		sscanf(path.c_str(), "/api/item/%d", &itemid);
 
-		Item it = db->getItem(itemid);
+		Item it = dbitem->get(itemid);
 		std::string content = ser->toJSON(it);
 		ok(soc,content);
 
@@ -74,7 +76,30 @@ bool App::get(IConHandle *soc, std::string path)
 	// answer if item is requested
 	if (path.find("/api/items") == 0)
 	{
-		std::vector<Item> it = db->getItems();
+		std::vector<int> it = dbitem->getIDs();
+		std::string content = ser->toJSON(it);
+		ok(soc,content);
+		return true;
+	}
+
+	// answer if user is requested
+	if (path.find("/api/user/") == 0)
+	{
+		int userid = 0;
+
+		sscanf(path.c_str(), "/api/user/%d", &userid);
+
+		User it = dbuser->get(userid);
+		std::string content = ser->toJSON(it);
+		ok(soc,content);
+
+		return true;
+	}
+
+	// answer if user is requested
+	if (path.find("/api/users") == 0)
+	{
+		std::vector<int> it = dbuser->getIDs();
 		std::string content = ser->toJSON(it);
 		ok(soc,content);
 		return true;
@@ -91,8 +116,16 @@ bool App::get(IConHandle *soc, std::string path)
 bool App::put(IConHandle *soc, std::string path, std::string content)
 {
 	if(path.find("/api/item/") == 0){
-		Item it = ser->fromJSON(content);
-		db->updateItem(it);
+		Item it;
+		ser->fromJSON(content,&it);
+		dbitem->update(it);
+		ok(soc,"");
+		return true;
+	}
+	if(path.find("/api/user/") == 0){
+		User it;
+		ser->fromJSON(content,&it);
+		dbuser->update(it);
 		ok(soc,"");
 		return true;
 	}
@@ -101,8 +134,16 @@ bool App::put(IConHandle *soc, std::string path, std::string content)
 bool App::post(IConHandle *soc, std::string path, std::string content)
 {
 	if(path.find("/api/item") == 0){
-		Item it = ser->fromJSON(content);
-		db->addItem(it);
+		Item it;
+		ser->fromJSON(content,&it);
+		dbitem->add(it);
+		ok(soc,"");
+		return true;
+	}
+	if(path.find("/api/user") == 0){
+		User it;
+		ser->fromJSON(content,&it);
+		dbuser->add(it);
 		ok(soc,"");
 		return true;
 	}
@@ -112,8 +153,15 @@ bool App::del(IConHandle *soc, std::string path)
 {
 	if(path.find("/api/item/") == 0){
 		int id = -1;
-		sscanf(path.c_str(),"/item/%d",&id);
-		db->deleteItem(id);
+		sscanf(path.c_str(),"/api/item/%d",&id);
+		dbitem->del(id);
+		ok(soc,"");
+		return true;
+	}
+	if(path.find("/api/user/") == 0){
+		int id = -1;
+		sscanf(path.c_str(),"/api/user/%d",&id);
+		dbuser->del(id);
 		ok(soc,"");
 		return true;
 	}

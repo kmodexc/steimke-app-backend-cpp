@@ -4,12 +4,12 @@
 
 namespace rls{
 
-class MockDataStore : public IDataBase{
+class MockDataStore : public IDataBase<Item>{
 	std::vector<Item> items;
 public:
 	MockDataStore();
-	Item getItem(int id) override;
-	std::vector<Item> getItems() override;
+	Item get(int id) override;
+	std::vector<Item> getAll() override;
 	~MockDataStore() override;
 };
 

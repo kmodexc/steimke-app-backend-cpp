@@ -7,24 +7,24 @@
 
 namespace rls{
 
-class SQLDataBase : public IDataBase{
+class SQLDataBaseItem : public IDataBase<Item>{
 	// private sql varialbes
 private:
 	sqlite3* db;
 	// threadsafe
 	std::mutex mtx;
 public:
-	SQLDataBase();
-	void addItem(Item) override;
-	Item getItem(int id) override;
+	SQLDataBaseItem();
+	void add(Item&) override;
+	Item get(int id) override;
 	std::vector<int> getIDs() override;
-	std::vector<Item> getItems() override;
-	void updateItem(Item) override;
-	void deleteItem(int id) override;
-	~SQLDataBase() override;
+	std::vector<Item> getAll() override;
+	void update(Item&) override;
+	void del(int id) override;
+	~SQLDataBaseItem() override;
 
 public:
-	const std::string db_file_name = "db1.sqlite";
+	const std::string db_file_name = "db_item.sqlite";
 	const std::string db_file_path = "";
 };
 

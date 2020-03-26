@@ -21,7 +21,9 @@ OBJS = 					\
 	MockDataStore.o		\
 	SimpleConHandle.o	\
 	SimpleSocket.o		\
-	SQLDataBase.o
+	SQLDataBaseItem.o	\
+	SQLDataBaseUser.o	\
+	User.o
 OBJS_w_PATH = $(patsubst %,$(OBJPATH)/%,$(OBJS))
 INCPATH = include
 SRCPATH = src

@@ -10,12 +10,13 @@ class App : public IConHandler{
 	DependencyService dep;
 	IHTTPSocket* soc;
 	IJSONSerializer* ser;
-	IDataBase* db;
+	IDataBase<Item>* dbitem;
+	IDataBase<User>* dbuser;
 protected:
 	static void ok(IConHandle* con,std::string content);
 public:
 	App();
-	bool initialize();
+	bool initialize(int argc,char *argv[]);
 	void run();
 	bool get(IConHandle* soc,std::string path) override;
 	bool put(IConHandle* soc,std::string path,std::string content) override;

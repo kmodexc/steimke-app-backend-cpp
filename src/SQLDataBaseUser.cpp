@@ -1,4 +1,4 @@
-#include "SQLDataBase.h"
+#include "SQLDataBaseUser.h"
 
 #define CHECK_SQL_ERROR(returncode, errorRetVal)                                          \
 	if (returncode != SQLITE_OK && returncode != SQLITE_DONE && returncode != SQLITE_ROW) \
@@ -9,7 +9,7 @@
 		return errorRetVal;                                                               \
 	}
 
-#define TO_CPP_STRING(in) (in == nullptr ? std::string("null") : (const char*)in)
+#define TO_CPP_STRING(in) (in == nullptr ? std::string("null") : (const char *)in)
 
 using namespace std;
 
@@ -18,7 +18,7 @@ namespace rls
 
 typedef std::unique_lock<std::mutex> stdlock;
 
-SQLDataBase::SQLDataBase()
+SQLDataBaseUser::SQLDataBaseUser()
 {
 	stdlock lock(mtx);
 	std::string fqn = db_file_path + db_file_name;
@@ -37,15 +37,10 @@ SQLDataBase::SQLDataBase()
 	if (!db_exist)
 	{
 		// create table if db was created
-		const char command[] = "CREATE TABLE Items("
+		const char command[] = "CREATE TABLE Users("
 							   "ID 			INT		,"
 							   "state		int		,"
 							   "name		text	,"
-							   "shortdesc	text	,"
-							   "desc		text	,"
-							   "creaid		int		,"
-							   "assid		int		,"
-							   "prio		int		,"
 							   "wl			int		)";
 
 		char *errmsg;
@@ -62,7 +57,7 @@ SQLDataBase::SQLDataBase()
 		}
 	}
 }
-void SQLDataBase::addItem(Item it)
+void SQLDataBaseUser::add(User &it)
 {
 	if (db == nullptr)
 	{
@@ -71,29 +66,19 @@ void SQLDataBase::addItem(Item it)
 	}
 	stdlock lock(mtx);
 
-	const char command[] = "INSERT INTO Items (ID,state,name,shortdesc,desc,creaid,assid,prio,wl) "
-						   "VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9)";
+	const char command[] = "INSERT INTO Users (ID,state,name,wl) "
+						   "VALUES (?1,?2,?3,?4)";
 	sqlite3_stmt *stmt;
 	int rc = sqlite3_prepare_v2(db, command, sizeof(command), &stmt, nullptr);
 	CHECK_SQL_ERROR(rc, );
 
-	rc = sqlite3_bind_int(stmt, 1, it.getID());
+	rc = sqlite3_bind_int(stmt, 1, it.getId());
 	CHECK_SQL_ERROR(rc, );
 	rc = sqlite3_bind_int(stmt, 2, (int)it.getState());
 	CHECK_SQL_ERROR(rc, );
 	rc = sqlite3_bind_text(stmt, 3, it.getName().c_str(), it.getName().length(), SQLITE_TRANSIENT);
 	CHECK_SQL_ERROR(rc, );
-	rc = sqlite3_bind_text(stmt, 4, it.getShortDiscription().c_str(), it.getShortDiscription().length(), SQLITE_TRANSIENT);
-	CHECK_SQL_ERROR(rc, );
-	rc = sqlite3_bind_text(stmt, 5, it.getDescription().c_str(), it.getDescription().length(), SQLITE_TRANSIENT);
-	CHECK_SQL_ERROR(rc, );
-	rc = sqlite3_bind_int(stmt, 6, it.getCreatorID());
-	CHECK_SQL_ERROR(rc, );
-	rc = sqlite3_bind_int(stmt, 7, it.getAssignedID());
-	CHECK_SQL_ERROR(rc, );
-	rc = sqlite3_bind_int(stmt, 8, it.getPriority());
-	CHECK_SQL_ERROR(rc, );
-	rc = sqlite3_bind_int(stmt, 9, it.getWorkload());
+	rc = sqlite3_bind_int(stmt, 4, it.getWorkload());
 	CHECK_SQL_ERROR(rc, );
 
 	rc = sqlite3_step(stmt);
@@ -102,43 +87,38 @@ void SQLDataBase::addItem(Item it)
 	rc = sqlite3_finalize(stmt);
 	CHECK_SQL_ERROR(rc, );
 }
-Item SQLDataBase::getItem(int id)
+User SQLDataBaseUser::get(int id)
 {
 	if (db == nullptr)
 	{
 		cerr << "Database closed" << endl;
-		return Item();
+		return User();
 	}
 	stdlock lock(mtx);
 
-	const char command[] = "SELECT * FROM Items WHERE ID=?1";
+	const char command[] = "SELECT * FROM Users WHERE ID=?1";
 	sqlite3_stmt *stmt;
 	int rc = sqlite3_prepare_v2(db, command, sizeof(command), &stmt, nullptr);
-	CHECK_SQL_ERROR(rc, Item());
+	CHECK_SQL_ERROR(rc, User());
 
 	rc = sqlite3_bind_int(stmt, 1, id);
-	CHECK_SQL_ERROR(rc, Item());
+	CHECK_SQL_ERROR(rc, User());
 
 	rc = sqlite3_step(stmt);
-	CHECK_SQL_ERROR(rc, Item());
+	CHECK_SQL_ERROR(rc, User());
 
-	ItemState state = (ItemState)sqlite3_column_int(stmt, 1);
+	UserState state = (UserState)sqlite3_column_int(stmt, 1);
 	std::string name = TO_CPP_STRING(sqlite3_column_text(stmt, 2));
-	std::string shortdesc = TO_CPP_STRING(sqlite3_column_text(stmt, 3));
-	std::string desc = TO_CPP_STRING(sqlite3_column_text(stmt, 4));
-	int creaid = sqlite3_column_int(stmt, 5);
-	int assid = sqlite3_column_int(stmt, 6);
-	int prio = sqlite3_column_int(stmt, 7);
-	int wl = sqlite3_column_int(stmt, 8);
+	int wl = sqlite3_column_int(stmt, 3);
 
-	Item it(id, state, name, shortdesc, desc, assid, creaid, prio, wl);
+	User it(id, name, state, wl);
 
 	rc = sqlite3_finalize(stmt);
-	CHECK_SQL_ERROR(rc, Item());
+	CHECK_SQL_ERROR(rc, User());
 
 	return it;
 }
-std::vector<int> SQLDataBase::getIDs()
+std::vector<int> SQLDataBaseUser::getIDs()
 {
 	if (db == nullptr)
 	{
@@ -147,7 +127,7 @@ std::vector<int> SQLDataBase::getIDs()
 	}
 	stdlock lock(mtx);
 
-	char command[] = "SELECT ID FROM Items";
+	char command[] = "SELECT ID FROM Users";
 	sqlite3_stmt *stmt;
 	int rc = sqlite3_prepare_v2(db, command, sizeof(command), &stmt, nullptr);
 	CHECK_SQL_ERROR(rc, std::vector<int>());
@@ -158,36 +138,36 @@ std::vector<int> SQLDataBase::getIDs()
 	{
 		CHECK_SQL_ERROR(rc, std::vector<int>());
 		rc = sqlite3_step(stmt);
-		if(rc == SQLITE_ROW)
+		if (rc == SQLITE_ROW)
 			retval.push_back(sqlite3_column_int(stmt, 0));
 	} while (rc != SQLITE_DONE);
 
 	rc = sqlite3_finalize(stmt);
 	CHECK_SQL_ERROR(rc, std::vector<int>());
-	cout << "Found " << retval.size() << " Item in DB" << endl;
+	cout << "Found " << retval.size() << " User in DB" << endl;
 	return retval;
 }
-std::vector<Item> SQLDataBase::getItems()
+std::vector<User> SQLDataBaseUser::getAll()
 {
 	// dont invoke mutex here
 	auto ids = getIDs();
 
-	std::vector<Item> retval;
+	std::vector<User> retval;
 
 	for (auto id : ids)
 	{
-		retval.push_back(getItem(id));
+		retval.push_back(get(id));
 	}
-	cout << "Return " << retval.size() << " Item" << endl;
+	cout << "Return " << retval.size() << " User" << endl;
 	return retval;
 }
-void SQLDataBase::updateItem(Item it)
+void SQLDataBaseUser::update(User &it)
 {
 	// dont invoke mutex here
-	deleteItem(it.getID());
-	addItem(it);
+	del(it.getId());
+	add(it);
 }
-void SQLDataBase::deleteItem(int id)
+void SQLDataBaseUser::del(int id)
 {
 	if (db == nullptr)
 	{
@@ -196,7 +176,7 @@ void SQLDataBase::deleteItem(int id)
 	}
 	stdlock lock(mtx);
 
-	char command[] = "DELETE FROM Items WHERE ID=?1";
+	char command[] = "DELETE FROM Users WHERE ID=?1";
 	sqlite3_stmt *stmt;
 	int rc = sqlite3_prepare_v2(db, command, sizeof(command), &stmt, nullptr);
 	CHECK_SQL_ERROR(rc, );
@@ -210,7 +190,7 @@ void SQLDataBase::deleteItem(int id)
 	rc = sqlite3_finalize(stmt);
 	CHECK_SQL_ERROR(rc, );
 }
-SQLDataBase::~SQLDataBase()
+SQLDataBaseUser::~SQLDataBaseUser()
 {
 	mtx.try_lock(); // dont really lock here to try safe db in case of exception
 	if (db != nullptr)

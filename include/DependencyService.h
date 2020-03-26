@@ -9,14 +9,16 @@ namespace rls{
 class DependencyService {
 	IHTTPSocket* soc;
 	IJSONSerializer* ser;
-	IDataBase* db;
+	IDataBase<Item>* dbitem;
+	IDataBase<User>* dbuser;
 public:
 	DependencyService();
 	~DependencyService();
 public:
 	IHTTPSocket *getHttpSocket();
 	IJSONSerializer *getJSONSerializer();
-	IDataBase* getDataBase();
+	IDataBase<Item>* getDataBaseItem();
+	IDataBase<User>* getDataBaseUser();
 };
 
 }

@@ -1,16 +1,18 @@
 #include "DependencyService.h"
 #include "MockDataStore.h"
-#include "SQLDataBase.h"
+#include "SQLDataBaseItem.h"
 #include "HTTPSocket.h"
 #include "JSONSerializer.h"
 #include "SimpleSocket.h"
+#include "SQLDataBaseUser.h"
 
 namespace rls{
 
 DependencyService::DependencyService(){
 	soc = nullptr;
 	ser = nullptr;
-	db = nullptr;
+	dbitem = nullptr;
+	dbuser = nullptr;
 }
 
 DependencyService::~DependencyService(){
@@ -37,10 +39,18 @@ IJSONSerializer* DependencyService::getJSONSerializer(){
 	return ser;
 }
 
-IDataBase* DependencyService::getDataBase(){
-	if(db == nullptr)
-		db = new SQLDataBase();
-	return db;
+IDataBase<Item>* DependencyService::getDataBaseItem(){
+	if(dbitem == nullptr){
+		dbitem = new SQLDataBaseItem();
+	}
+	return dbitem;
+}
+
+IDataBase<User>* DependencyService::getDataBaseUser(){
+	if(dbuser == nullptr){
+		dbuser = new SQLDataBaseUser();
+	}
+	return dbuser;
 }
 
 }

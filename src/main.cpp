@@ -4,12 +4,12 @@
 using namespace std;
 using namespace rls;
 
-int main(void)
+int main(int argc,char *argv[])
 {
 	App *app = nullptr;
 	try{
 		app = new App();
-		if(app->initialize())
+		if(app->initialize(argc,argv))
 			app->run();
 		else
 		{

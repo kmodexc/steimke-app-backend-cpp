@@ -4,14 +4,15 @@
 
 namespace rls{
 
+template<typename T>
 class IDataBase{
 public:
-	virtual Item getItem(int id) = 0;
-	virtual std::vector<Item> getItems() = 0;
+	virtual T get(int id) = 0;
+	virtual std::vector<T> getAll() = 0;
 	virtual std::vector<int> getIDs() = 0;
-	virtual void addItem(Item) = 0;
-	virtual void updateItem(Item) = 0;
-	virtual void deleteItem(int id) = 0;
+	virtual void add(T&) = 0;
+	virtual void update(T&) = 0;
+	virtual void del(int id) = 0;
 	virtual ~IDataBase(){};
 };
 
