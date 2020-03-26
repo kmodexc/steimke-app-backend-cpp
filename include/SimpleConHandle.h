@@ -2,7 +2,7 @@
 #include "IConHandle.h"
 #include <string>
 #include <string.h>
-#include <unistd.h>
+#include <sys/socket.h>
 
 namespace rls{
 

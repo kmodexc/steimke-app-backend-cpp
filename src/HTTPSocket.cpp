@@ -28,6 +28,10 @@ void HTTPSocket::init(IConHandler *handler, int port)
 
 	options[0].name = "listening_ports";
 	options[0].value = str_port;
+	options[1].name = "ssl_certificate";
+	options[1].value = "server.pem";
+	options[2].name = "ssl_protocol_version";
+	options[2].value = "3";
 
 	snprintf(str_port,sizeof(str_port),"%d",port);
 

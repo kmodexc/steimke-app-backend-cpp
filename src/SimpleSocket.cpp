@@ -72,10 +72,6 @@ void SimpleSocket::main_thread(SimpleSocket *mthis)
 
 		if (header.valid)
 		{
-			con.send("HTTP/1.1 200 OK\r\n\r\n");
-
-			cout << "wrote answer ok" << endl;
-
 			std::string content;
 			if (header.contentLength > 0)
 			{
@@ -149,9 +145,8 @@ HTTPHeader SimpleSocket::decodeHeader(std::string str_header)
 			ss >> header.contentLength;
 		}
 	}
-	if (!ss)
-	{
-		header.valid = false;
+	if(!ss){
+		header.contentLength = 0;
 	}
 	return header;
 }

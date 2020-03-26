@@ -1,15 +1,18 @@
 #include "SimpleConHandle.h"
+#include <iostream>
+
+using namespace std;
 
 namespace rls
 {
 
-SimpleConHandle::SimpleConHandle(int socfd)
+SimpleConHandle::SimpleConHandle(int msocfd)
 {
-	this->sockfd = sockfd;
+	this->sockfd = msocfd;
 }
 void SimpleConHandle::send(std::string str)
 {
-	write(sockfd, str.c_str(), str.length());
+	::send(sockfd, str.c_str(), str.length(),0);
 }
 std::string SimpleConHandle::recv(int maxlen)
 {
@@ -17,8 +20,8 @@ std::string SimpleConHandle::recv(int maxlen)
 	char *it = buffer;
 	memset(buffer, 0, sizeof(buffer));
 	bool cr = false;
-	read(sockfd, it, 1);
-	while (((it - buffer) < maxlen) && ((*it >= 32 && *it < 127) || (*it == '\n' || *it == '\n')))
+	::recv(sockfd, it, 1,0);
+	while (((it - buffer) < (maxlen - 1)) && ((*it >= 32 && *it < 127) || (*it == '\n' || *it == '\r')))
 	{
 		if (cr && *it == '\n')
 			break;
@@ -26,7 +29,7 @@ std::string SimpleConHandle::recv(int maxlen)
 			cr = true;
 		else
 			cr = false;
-		read(sockfd, ++it, 1);
+		::recv(sockfd, ++it, 1,0);
 	}
 	std::string ret = buffer;
 	return ret;

@@ -27,7 +27,7 @@ DependencyService::~DependencyService(){
 
 IHTTPSocket* DependencyService::getHttpSocket(){
 	if(soc == nullptr)
-		soc = new SimpleSocket();
+		soc = new HTTPSocket();
 	return soc;
 }
 

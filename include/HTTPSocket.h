@@ -14,7 +14,7 @@ class HTTPSocket : public IHTTPSocket{
 private:
 	lh_ctx_t *ctx;
 	lh_clb_t callbacks;
-	lh_opt_t options[2];
+	lh_opt_t options[5];
 	char str_port[10];
 
 	// local variables for interface to ui
