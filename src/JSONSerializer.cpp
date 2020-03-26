@@ -9,7 +9,7 @@ std::string JSONSerializer::toJSON(const Item &item)
 {
 	json j;
 	j["id"] = item.getID();
-	j["state"] = "created";// item.getState().toString();
+	j["state"] = toString(item.getState());
 	j["name"] = item.getName();
 	j["shortdesc"] = item.getShortDiscription();
 	j["desc"] = item.getDescription();
@@ -35,8 +35,10 @@ void JSONSerializer::fromJSON(const std::string &str, Item *itout)
 	if (!j["id"].is_null())
 		id = j["id"].get<int>();
 	ItemState state = ItemState::created;
-	if (!j["state"].is_null())
+	if (!j["state"].is_null()){
 		std::string str_state = j["state"].get<std::string>();
+		state = parseItemState(str_state);
+	}
 	std::string name;
 	if (!j["name"].is_null())
 		name = j["name"].get<std::string>();

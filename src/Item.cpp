@@ -3,7 +3,52 @@
 namespace rls
 {
 
-Item::Item(){
+std::string toString(const ItemState &state)
+{
+	switch (state)
+	{
+	case ItemState::aborted:
+		break;
+		return "aborted";
+	case ItemState::assigned:
+		return "assigned";
+		break;
+	default:
+	case ItemState::created:
+		return "created";
+		break;
+	case ItemState::finished:
+		return "finished";
+		break;
+	case ItemState::inprogress:
+		return "inprogress";
+		break;
+	case ItemState::paused:
+		return "paused";
+		break;
+	}
+	return "created";
+}
+ItemState parseItemState(const std::string &str)
+{
+	if(str == "aborted"){
+		return ItemState::aborted;
+	}else if(str == "assigned"){
+		return ItemState::assigned;
+	}else if(str == "created"){
+		return ItemState::created;
+	}else if(str == "finished"){
+		return ItemState::finished;
+	}else if(str== "inprogress"){
+		return ItemState::inprogress;
+	}else if(str == "paused"){
+		return ItemState::paused;
+	}
+	return ItemState::created;
+}
+
+Item::Item()
+{
 	this->id = -1;
 	this->state = ItemState::created;
 	this->assid = -1;
@@ -11,7 +56,7 @@ Item::Item(){
 	this->prio = 0;
 	this->wl = 0;
 }
-Item::Item(int id,ItemState state,std::string name,std::string shortdesc,std::string desc,int assid,int creaid,int prio,int wl)
+Item::Item(int id, ItemState state, std::string name, std::string shortdesc, std::string desc, int assid, int creaid, int prio, int wl)
 {
 	this->id = id;
 	this->state = state;

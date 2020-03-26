@@ -12,6 +12,9 @@ enum class ItemState{
 	aborted
 };
 
+std::string toString(const ItemState &state);
+ItemState parseItemState(const std::string &str);
+
 class Item{
 	int id;
 	ItemState state;
