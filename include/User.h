@@ -11,6 +11,9 @@ enum class UserState
 	guest
 };
 
+std::string toString(const UserState &state);
+UserState parseUserState(const std::string &str);
+
 class User
 {
 	int id;

@@ -2,7 +2,36 @@
 
 namespace rls
 {
-User::User() : User(0,"",UserState::guest,0)
+std::string toString(const UserState &state)
+{
+	switch (state)
+	{
+	case UserState::admin:
+		return "admin";
+		break;
+	case UserState::guest:
+		return "guest";
+		break;
+	case UserState::user:
+		return "user";
+		break;
+	default:
+		break;
+	}
+	return "user";
+}
+UserState parseUserState(const std::string &str)
+{
+	if(str == "admin"){
+		return UserState::admin;
+	}else if(str == "guest"){
+		return UserState::guest;
+	}else if(str == "user"){
+		return UserState::user;
+	}
+	return UserState::user;
+}
+User::User() : User(0, "", UserState::guest, 0)
 {
 }
 User::User(int id, std::string name, UserState state, int workload)

@@ -68,7 +68,7 @@ std::string JSONSerializer::toJSON(const User &usr)
 {
 	json j;
 	j["id"] = usr.getId();
-	j["state"] = "user";// usr.getState().toString();
+	j["state"] = toString(usr.getState());
 	j["name"] = usr.getName();
 	j["workload"] = usr.getWorkload();
 	return j.dump();
@@ -80,8 +80,10 @@ void JSONSerializer::fromJSON(const std::string &str, User *usr)
 	if (!j["id"].is_null())
 		id = j["id"].get<int>();
 	UserState state = UserState::user;
-	if (!j["state"].is_null())
+	if (!j["state"].is_null()){
 		std::string str_state = j["state"].get<std::string>();
+		state = parseUserState(str_state);
+	}
 	std::string name;
 	if (!j["name"].is_null())
 		name = j["name"].get<std::string>();
