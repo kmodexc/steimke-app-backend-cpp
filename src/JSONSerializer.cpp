@@ -35,7 +35,8 @@ void JSONSerializer::fromJSON(const std::string &str, Item *itout)
 	if (!j["id"].is_null())
 		id = j["id"].get<int>();
 	ItemState state = ItemState::created;
-	if (!j["state"].is_null()){
+	if (!j["state"].is_null())
+	{
 		std::string str_state = j["state"].get<std::string>();
 		state = parseItemState(str_state);
 	}
@@ -80,7 +81,8 @@ void JSONSerializer::fromJSON(const std::string &str, User *usr)
 	if (!j["id"].is_null())
 		id = j["id"].get<int>();
 	UserState state = UserState::user;
-	if (!j["state"].is_null()){
+	if (!j["state"].is_null())
+	{
 		std::string str_state = j["state"].get<std::string>();
 		state = parseUserState(str_state);
 	}

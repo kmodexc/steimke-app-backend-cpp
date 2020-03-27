@@ -14,6 +14,7 @@ class DependencyService {
 public:
 	DependencyService();
 	~DependencyService();
+	void dispose();
 public:
 	IHTTPSocket *getHttpSocket();
 	IJSONSerializer *getJSONSerializer();
