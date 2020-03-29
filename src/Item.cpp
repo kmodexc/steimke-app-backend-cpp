@@ -1,4 +1,5 @@
 #include "Item.h"
+#include <cstring>
 
 namespace rls
 {
@@ -31,17 +32,28 @@ std::string toString(const ItemState &state)
 }
 ItemState parseItemState(const std::string &str)
 {
-	if(str == "aborted"){
+	if (str == "aborted")
+	{
 		return ItemState::aborted;
-	}else if(str == "assigned"){
+	}
+	else if (str == "assigned")
+	{
 		return ItemState::assigned;
-	}else if(str == "created"){
+	}
+	else if (str == "created")
+	{
 		return ItemState::created;
-	}else if(str == "finished"){
+	}
+	else if (str == "finished")
+	{
 		return ItemState::finished;
-	}else if(str== "inprogress"){
+	}
+	else if (str == "inprogress")
+	{
 		return ItemState::inprogress;
-	}else if(str == "paused"){
+	}
+	else if (str == "paused")
+	{
 		return ItemState::paused;
 	}
 	return ItemState::created;
@@ -55,8 +67,16 @@ Item::Item()
 	this->creaid = -1;
 	this->prio = 0;
 	this->wl = 0;
+	this->placeid = -1;
+
+	memset(&(this->createTime),0,sizeof(TimeStamp));
+	memset(&(this->assignedTime),0,sizeof(TimeStamp));
+	memset(&(this->finishedTime),0,sizeof(TimeStamp));
 }
-Item::Item(int id, ItemState state, std::string name, std::string shortdesc, std::string desc, int assid, int creaid, int prio, int wl)
+Item::Item(int id, ItemState state, std::string name,
+		   std::string shortdesc, std::string desc,
+		   int assid, int creaid, int prio, int wl, int placeid,
+		   TimeStamp created, TimeStamp assigned, TimeStamp finished)
 {
 	this->id = id;
 	this->state = state;
@@ -67,6 +87,11 @@ Item::Item(int id, ItemState state, std::string name, std::string shortdesc, std
 	this->creaid = creaid;
 	this->prio = prio;
 	this->wl = wl;
+	this->placeid = placeid;
+
+	this->createTime = created;
+	this->assignedTime = assigned;
+	this->finishedTime = finished;
 }
 int Item::getID() const
 {
@@ -103,6 +128,22 @@ int Item::getPriority() const
 int Item::getWorkload() const
 {
 	return wl;
+}
+int Item::getPlaceID() const
+{
+	return placeid;
+}
+TimeStamp Item::getCreateTime() const
+{
+	return createTime;
+}
+TimeStamp Item::getAssignedTime() const
+{
+	return assignedTime;
+}
+TimeStamp Item::getFinishedTime() const
+{
+	return finishedTime;
 }
 
 } // namespace rls

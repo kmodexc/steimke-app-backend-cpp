@@ -33,12 +33,17 @@ class Item{
 	int creaid;
 	int prio;
 	int wl;
+	int placeid;
+
 	TimeStamp createTime;
 	TimeStamp assignedTime;
 	TimeStamp finishedTime;
 public:
 	Item();
-	Item(int id,ItemState state,std::string name,std::string shortdesc,std::string desc,int assid,int creaid,int prio,int wl);
+	Item(int id,ItemState state,std::string name,
+		std::string shortdesc,std::string desc,
+		int assid,int creaid,int prio,int wl,int placeid,
+		TimeStamp created,TimeStamp assigned,TimeStamp finished);
 	int getID() const;
 	ItemState getState() const;
 	std::string getName() const;
@@ -48,6 +53,11 @@ public:
 	int getCreatorID() const;
 	int getPriority() const;
 	int getWorkload() const;
+	int getPlaceID() const;
+
+	TimeStamp getCreateTime() const;
+	TimeStamp getAssignedTime() const;
+	TimeStamp getFinishedTime() const;
 };
 
 }
