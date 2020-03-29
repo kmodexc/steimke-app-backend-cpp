@@ -59,7 +59,7 @@ ItemState parseItemState(const std::string &str)
 	return ItemState::created;
 }
 
-Item::Item()
+Item::Item() : createTime(), assignedTime(), finishedTime()
 {
 	this->id = -1;
 	this->state = ItemState::created;
@@ -69,9 +69,10 @@ Item::Item()
 	this->wl = 0;
 	this->placeid = -1;
 
-	memset(&(this->createTime),0,sizeof(TimeStamp));
-	memset(&(this->assignedTime),0,sizeof(TimeStamp));
-	memset(&(this->finishedTime),0,sizeof(TimeStamp));
+	// done by constructor
+	//memset(&(this->createTime),0,sizeof(TimeStamp));
+	//memset(&(this->assignedTime),0,sizeof(TimeStamp));
+	//memset(&(this->finishedTime),0,sizeof(TimeStamp));
 }
 Item::Item(int id, ItemState state, std::string name,
 		   std::string shortdesc, std::string desc,

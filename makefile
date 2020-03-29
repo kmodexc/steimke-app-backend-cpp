@@ -10,7 +10,7 @@ vpath %.o obj
 PROG = rlserv
 CC = g++
 LD = g++
-LDFLAGS = -Lmodules/libhttp -l/libhttp -lpthread -ldl 
+LDFLAGS = -Lmodules/libhttp -l/libhttp -lpthread -ldl -lsqlite3
 OBJPATH = obj
 OBJS = 					\
 	App.o 				\
@@ -27,19 +27,23 @@ OBJS = 					\
 	SQLDataBaseItem.o	\
 	SQLDataBaseUser.o	\
 	User.o			
-OBJS_w_PATH = $(patsubst %,$(OBJPATH)/%,$(OBJS)) modules/bld/sqlite3.o
+OBJS_w_PATH = $(patsubst %,$(OBJPATH)/%,$(OBJS))
 INCPATH = include
 SRCPATH = src
 BINPATH = bin
 CPPFLAGS = -std=c++17 -c -Wall -g -I$(INCPATH) -Imodules/libhttp/include -Imodules/json/single_include
 
-build: $(BINDIR)/$(PROG)
+bin/$(PROG): $(OBJS_w_PATH) $(BINPATH)
+	$(LD) -o $(BINPATH)/$(PROG) $(OBJS_w_PATH) $(LDFLAGS)
 
-$(OBJDIR) obj/%.o: %.cpp
+obj/%.o: %.cpp $(OBJPATH)
 	$(CC) $(CPPFLAGS) -o $@ $<
 
-$(BINDIR) $(BINDIR)/$(PROG): $(OBJS_w_PATH)
-	$(LD) -o $(BINPATH)/$(PROG) $(OBJS_w_PATH) $(LDFLAGS) 
+$(BINPATH):
+	mkdir -p $(BINPATH)
+
+$(OBJPATH):
+	mkdir -p $(OBJPATH)
 
 clean:
 	rm -f -r $(BINPATH)
