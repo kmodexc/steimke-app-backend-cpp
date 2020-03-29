@@ -47,7 +47,9 @@ void HTTPSocket::run()
 		return;
 	}
 	ctx = httplib_start(&callbacks, this, options);
-	getchar();
+	if(getchar() == 'q')
+		return;
+	while(true);
 }
 
 void HTTPSocket::close()
