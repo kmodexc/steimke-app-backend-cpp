@@ -1,5 +1,8 @@
 #makefile
 
+.SUFFIXES: 
+.SUFFIXES: .o
+
 vpath %.cpp src
 vpath %.h include
 vpath %.o obj
@@ -7,7 +10,7 @@ vpath %.o obj
 PROG = rlserv
 CC = g++
 LD = g++
-LDFLAGS = -Lmodules/libhttp -l/libhttp -lpthread -ldl -lsqlite3
+LDFLAGS = -Lmodules/libhttp -l/libhttp -lpthread -ldl 
 OBJPATH = obj
 OBJS = 					\
 	App.o 				\
@@ -23,27 +26,26 @@ OBJS = 					\
 	SimpleSocket.o		\
 	SQLDataBaseItem.o	\
 	SQLDataBaseUser.o	\
-	User.o
-OBJS_w_PATH = $(patsubst %,$(OBJPATH)/%,$(OBJS))
+	User.o			
+OBJS_w_PATH = $(patsubst %,$(OBJPATH)/%,$(OBJS)) modules/bld/sqlite3.o
 INCPATH = include
 SRCPATH = src
 BINPATH = bin
 CPPFLAGS = -std=c++17 -c -Wall -g -I$(INCPATH) -Imodules/libhttp/include -Imodules/json/single_include
 
-build: $(PROG)
+build: $(BINDIR)/$(PROG)
 
-init:
-	mkdir -p $(OBJPATH)
-	mkdir -p $(BINPATH)
+$(OBJDIR) obj/%.o: %.cpp
+	$(CC) $(CPPFLAGS) -o $@ $<
 
-%.o: %.cpp init
-	$(CC) $(CPPFLAGS) -o $(OBJPATH)/$@ $<
-
-$(PROG): $(OBJS) init
+$(BINDIR) $(BINDIR)/$(PROG): $(OBJS_w_PATH)
 	$(LD) -o $(BINPATH)/$(PROG) $(OBJS_w_PATH) $(LDFLAGS) 
 
 clean:
-	rm -f -r $(OBJPATH) $(BINPATH)
+	rm -f -r $(BINPATH)
+cleanall: clean
+	rm -f -r $(OBJPATH)
 
+.PHONY: clean init build
 
 	
