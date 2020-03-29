@@ -17,6 +17,8 @@ std::string JSONSerializer::toJSON(const Item &item)
 	j["creatorId"] = item.getCreatorID();
 	j["priority"] = item.getPriority();
 	j["workload"] = item.getWorkload();
+	j["placeid"] = item.getPlaceID();
+
 	return j.dump();
 }
 std::string JSONSerializer::toJSON(const std::vector<Item> &items)
@@ -27,6 +29,29 @@ std::string JSONSerializer::toJSON(const std::vector<Item> &items)
 		idlist.push_back(it.getID());
 	}
 	return toJSON(idlist);
+}
+std::string JSONSerializer::toJSON(const json &j, const TimeStamp &time, const std::string &prefix)
+{
+	j[prefix.c_str()]["year"] = time.year;
+	j[prefix.c_str()]["month"] = time.month;
+	j[prefix.c_str()]["day"] = time.day;
+	j[prefix.c_str()]["hour"] = time.hour;
+	j[prefix.c_str()]["minute"] = time.minute;
+}
+void JSONSerializer::fromJSON(const json &j, const std::string &str, TimeStamp *time, const std::string &prefix)
+{
+	TimeStamp t;
+	memset(&t, 0, sizeof(TimeStamp));
+	if (!j[prefix.c_str()]["year"].is_null())
+		t.year = j[prefix.c_str()]["year"].get<int>();
+	if (!j[prefix.c_str()]["month"].is_null())
+		t.month = j[prefix.c_str()]["month"].get<int>();
+	if (!j[prefix.c_str()]["day"].is_null())
+		t.day = j[prefix.c_str()]["day"].get<int>();
+	if (!j[prefix.c_str()]["hour"].is_null())
+		t.hour = j[prefix.c_str()]["hour"].get<int>();
+	if (!j[prefix.c_str()]["minute"].is_null())
+		t.minute = j[prefix.c_str()]["minute"].get<int>();
 }
 void JSONSerializer::fromJSON(const std::string &str, Item *itout)
 {

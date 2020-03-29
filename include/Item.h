@@ -9,6 +9,7 @@ struct TimeStamp{
 	int day;
 	int hour;
 	int minute;
+	TimeStamp(){year=0;month=0;day=0;hour=0;minute=0;}
 };
 
 enum class ItemState{
