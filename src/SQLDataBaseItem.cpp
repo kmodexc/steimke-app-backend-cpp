@@ -95,7 +95,7 @@ void SQLDataBaseItem::add(Item &it)
 	stdlock lock(mtx);
 
 	const char command[] = "INSERT INTO Items "
-						   "(ID,state,name,shortdesc,desc,creaid,assid,prio,wl,placeid,res1,res2,res3"
+						   "(ID,state,name,shortdesc,desc,creaid,assid,prio,wl,placeid,res1,res2,res3,"
 						   "res4,creayear,creamonth,creaday,creahour,creaminute,"
 						   "res5,assyear,assmonth,assday,asshour,assminute,"
 						   "res6,finyear,finmonth,finday,finhour,finminute,"
