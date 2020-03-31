@@ -60,7 +60,7 @@ void JSONSerializer::fromJSON(const std::string &str, Item *itout)
 		wl = j["workload"].get<int>();
 	int placeid = -1;
 	if (!j["placeid"].is_null())
-		wl = j["placeid"].get<int>();
+		placeid = j["placeid"].get<int>();
 
 	TimeStamp createTime;
 	if (!j["createtime"].is_null())
