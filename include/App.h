@@ -12,6 +12,7 @@ class App : public IConHandler{
 	IJSONSerializer* ser;
 	IDataBase<Item>* dbitem;
 	IDataBase<User>* dbuser;
+	IDataBase<Place>* dbplaces;
 protected:
 	static void ok(IConHandle* con,std::string content);
 public:

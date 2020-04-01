@@ -4,6 +4,7 @@
 #include "MockDataStore.h"
 #include "SQLDataBaseItem.h"
 #include "SQLDataBaseUser.h"
+#include "SQLDataBasePlaces.h"
 #include "SimpleSocket.h"
 
 namespace rls
@@ -65,6 +66,15 @@ IDataBase<User> *DependencyService::getDataBaseUser()
 		dbuser = new SQLDataBaseUser();
 	}
 	return dbuser;
+}
+
+IDataBase<Place> *DependencyService::getDataBasePlaces()
+{
+	if (dbplaces == nullptr)
+	{
+		dbplaces = new SQLDataBasePlaces();
+	}
+	return dbplaces;
 }
 
 } // namespace rls

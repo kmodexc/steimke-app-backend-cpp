@@ -140,6 +140,36 @@ void JSONSerializer::fromJSON(const std::string &str, User *usr)
 	User mu(id, name, state, wl);
 	*usr = mu;
 }
+std::string JSONSerializer::toJSON(const Place &p)
+{
+	json j;
+	j["id"] = p.id;
+	j["type"] = toString(p.type);
+	j["name"] = p.name;
+	return j.dump();
+}
+void JSONSerializer::fromJSON(const std::string &str, Place *p)
+{
+	auto j = json::parse(str);
+	int id = -1;
+	if (!j["id"].is_null())
+		id = j["id"].get<int>();
+	PlaceType type = PlaceType::_public;
+	if (!j["type"].is_null())
+	{
+		std::string str_state = j["type"].get<std::string>();
+		type = parsePlaceType(str_state);
+	}
+	std::string name;
+	if (!j["name"].is_null())
+		name = j["name"].get<std::string>();
+
+	Place mp;
+	mp.id = id;
+	mp.type = type;
+	mp.name = name;
+	*p = mp;
+}
 std::string JSONSerializer::toJSON(const std::vector<int> &ids)
 {
 	json j = ids;

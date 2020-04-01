@@ -11,6 +11,7 @@ App::App()
 	ser = nullptr;
 	dbitem = nullptr;
 	dbuser = nullptr;
+	dbplaces = nullptr;
 }
 
 bool App::initialize(int argc,char *argv[])
@@ -23,6 +24,7 @@ bool App::initialize(int argc,char *argv[])
 	ser = dep.getJSONSerializer();
 	dbitem = dep.getDataBaseItem();
 	dbuser = dep.getDataBaseUser();
+	dbplaces = dep.getDataBasePlaces();
 	soc->init(this, port);
 	return true;
 }
@@ -73,7 +75,7 @@ bool App::get(IConHandle *soc, std::string path)
 		return true;
 	}
 
-	// answer if item is requested
+	// answer if items are requested
 	if (path.find("/api/items") == 0)
 	{
 		std::vector<int> it = dbitem->getIDs();
@@ -96,10 +98,34 @@ bool App::get(IConHandle *soc, std::string path)
 		return true;
 	}
 
-	// answer if user is requested
+	// answer if users are requested
 	if (path.find("/api/users") == 0)
 	{
 		std::vector<int> it = dbuser->getIDs();
+		std::string content = ser->toJSON(it);
+		ok(soc,content);
+		return true;
+	}
+
+
+	// answer if place is requested
+	if (path.find("/api/place/") == 0)
+	{
+		int placeid = 0;
+
+		sscanf(path.c_str(), "/api/place/%d", &placeid);
+
+		Place it = dbplaces->get(placeid);
+		std::string content = ser->toJSON(it);
+		ok(soc,content);
+
+		return true;
+	}
+
+	// answer if place is requested
+	if (path.find("/api/places") == 0)
+	{
+		std::vector<int> it = dbplaces->getIDs();
 		std::string content = ser->toJSON(it);
 		ok(soc,content);
 		return true;

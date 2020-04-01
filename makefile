@@ -22,9 +22,11 @@ OBJS = 					\
 	JSONSerializer.o	\
 	main.o				\
 	MockDataStore.o		\
+	Place.o				\
 	SimpleConHandle.o	\
 	SimpleSocket.o		\
 	SQLDataBaseItem.o	\
+	SQLDataBasePlaces.o	\
 	SQLDataBaseUser.o	\
 	User.o			
 OBJS_w_PATH = $(patsubst %,$(OBJPATH)/%,$(OBJS))
