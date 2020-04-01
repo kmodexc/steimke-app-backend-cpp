@@ -155,6 +155,13 @@ bool App::put(IConHandle *soc, std::string path, std::string content)
 		ok(soc,"");
 		return true;
 	}
+	if(path.find("/api/place/") == 0){
+		Place it;
+		ser->fromJSON(content,&it);
+		dbplaces->update(it);
+		ok(soc,"");
+		return true;
+	}
 	return false;
 }
 bool App::post(IConHandle *soc, std::string path, std::string content)
@@ -170,6 +177,13 @@ bool App::post(IConHandle *soc, std::string path, std::string content)
 		User it;
 		ser->fromJSON(content,&it);
 		dbuser->add(it);
+		ok(soc,"");
+		return true;
+	}
+	if(path.find("/api/place") == 0){
+		Place it;
+		ser->fromJSON(content,&it);
+		dbplaces->add(it);
 		ok(soc,"");
 		return true;
 	}
