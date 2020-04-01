@@ -205,6 +205,13 @@ bool App::del(IConHandle *soc, std::string path)
 		ok(soc,"");
 		return true;
 	}
+	if(path.find("/api/place/") == 0){
+		int id = -1;
+		sscanf(path.c_str(),"/api/place/%d",&id);
+		dbplaces->del(id);
+		ok(soc,"");
+		return true;
+	}
 	return false;
 }
 App::~App()
