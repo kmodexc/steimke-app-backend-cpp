@@ -37,6 +37,7 @@ SQLDataBasePlaces::SQLDataBasePlaces()
 	if (!db_exist)
 	{
 		// create table if db was created
+		// default place table
 		const char command[] = "CREATE TABLE Places("
 							   "ID 			INT		,"
 							   "state		int		,"
@@ -44,6 +45,25 @@ SQLDataBasePlaces::SQLDataBasePlaces()
 
 		char *errmsg;
 		if (sqlite3_exec(db, command, 0, nullptr, &errmsg) != SQLITE_OK)
+		{
+			cerr << "error creating table" << endl;
+			if (errmsg)
+			{
+				cerr << "errormessage: " << errmsg << endl;
+			}
+			sqlite3_close(db);
+			db = nullptr;
+			return;
+		}
+
+		// create table if db was created
+		// place members table
+		const char command2[] = "CREATE TABLE PlaceMembers("
+							   "ID 			INT		,"
+							   "type		int		,"
+							   "member		int		)";
+
+		if (sqlite3_exec(db, command2, 0, nullptr, &errmsg) != SQLITE_OK)
 		{
 			cerr << "error creating table" << endl;
 			if (errmsg)
@@ -83,6 +103,36 @@ void SQLDataBasePlaces::add(Place &it)
 
 	rc = sqlite3_finalize(stmt);
 	CHECK_SQL_ERROR(rc, );
+
+	// members only if private
+
+	if (it.type == PlaceType::_private)
+	{
+		// set members
+
+		const char command2[] = "INSERT INTO PlaceMembers (ID,type,member) "
+							   "VALUES (?1,?2,?3)";
+
+		for (unsigned int cnt = 0; cnt < it.members.size(); cnt++)
+		{
+			sqlite3_stmt *stmt;
+			int rc = sqlite3_prepare_v2(db, command2, sizeof(command2), &stmt, nullptr);
+			CHECK_SQL_ERROR(rc, );
+
+			rc = sqlite3_bind_int(stmt, 1, it.id);
+			CHECK_SQL_ERROR(rc, );
+			rc = sqlite3_bind_int(stmt, 2, 0);
+			CHECK_SQL_ERROR(rc, );
+			rc = sqlite3_bind_int(stmt, 3, it.members[cnt]);
+			CHECK_SQL_ERROR(rc, );
+
+			rc = sqlite3_step(stmt);
+			CHECK_SQL_ERROR(rc, );
+
+			rc = sqlite3_finalize(stmt);
+			CHECK_SQL_ERROR(rc, );
+		}
+	}
 }
 Place SQLDataBasePlaces::get(int id)
 {
@@ -114,6 +164,34 @@ Place SQLDataBasePlaces::get(int id)
 
 	rc = sqlite3_finalize(stmt);
 	CHECK_SQL_ERROR(rc, Place());
+
+	// get members only if private
+
+	if (it.type == PlaceType::_private)
+	{
+		// set members
+
+		const char command2[] = "SELECT * FROM PlaceMembers WHERE ID=?1";
+
+		stmt = nullptr;
+		int rc = sqlite3_prepare_v2(db, command2, sizeof(command2), &stmt, nullptr);
+		CHECK_SQL_ERROR(rc, Place());
+
+		rc = sqlite3_bind_int(stmt, 1, it.id);
+		CHECK_SQL_ERROR(rc, Place());
+
+		rc = sqlite3_step(stmt);
+			CHECK_SQL_ERROR(rc, Place());
+		while (rc == SQLITE_ROW)
+		{
+			it.members.push_back(sqlite3_column_int(stmt,1));
+			rc = sqlite3_step(stmt);
+			CHECK_SQL_ERROR(rc, Place());
+		}
+
+		rc = sqlite3_finalize(stmt);
+		CHECK_SQL_ERROR(rc, Place());
+	}
 
 	return it;
 }

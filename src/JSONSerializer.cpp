@@ -146,6 +146,8 @@ std::string JSONSerializer::toJSON(const Place &p)
 	j["id"] = p.id;
 	j["type"] = toString(p.type);
 	j["name"] = p.name;
+	j["creatorid"] = p.creatorId;
+	j["members"] = p.members;
 	return j.dump();
 }
 void JSONSerializer::fromJSON(const std::string &str, Place *p)
@@ -163,11 +165,19 @@ void JSONSerializer::fromJSON(const std::string &str, Place *p)
 	std::string name;
 	if (!j["name"].is_null())
 		name = j["name"].get<std::string>();
+	int creatorId = -1;
+	if (!j["creatorid"].is_null())
+		creatorId = j["creatorid"].get<int>();
+	std::vector<int> members;
+	if (!j["members"].is_null())
+		members = j["members"].get<std::vector<int>>();
 
 	Place mp;
 	mp.id = id;
 	mp.type = type;
 	mp.name = name;
+	mp.creatorId = creatorId;
+	mp.members = members;
 	*p = mp;
 }
 std::string JSONSerializer::toJSON(const std::vector<int> &ids)

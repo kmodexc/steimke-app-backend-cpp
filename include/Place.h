@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 namespace rls
 {
@@ -19,6 +20,8 @@ public:
 	int id;
 	std::string name;
 	PlaceType type;
+	int creatorId;
+	std::vector<int> members;
 };
 
 } // namespace rls
