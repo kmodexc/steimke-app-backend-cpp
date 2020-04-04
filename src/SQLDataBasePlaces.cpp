@@ -189,7 +189,7 @@ Place SQLDataBasePlaces::get(int id)
 		CHECK_SQL_ERROR(rc, Place());
 		while (rc == SQLITE_ROW)
 		{
-			it.members.push_back(sqlite3_column_int(stmt, 1));
+			it.members.push_back(sqlite3_column_int(stmt, 2));
 			rc = sqlite3_step(stmt);
 			CHECK_SQL_ERROR(rc, Place());
 		}
