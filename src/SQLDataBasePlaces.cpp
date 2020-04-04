@@ -271,6 +271,20 @@ void SQLDataBasePlaces::del(int id)
 
 	rc = sqlite3_finalize(stmt);
 	CHECK_SQL_ERROR(rc, );
+
+	char command2[] = "DELETE FROM PlaceMembers WHERE ID=?1";
+	stmt = nullptr;
+	int rc = sqlite3_prepare_v2(db, command2, sizeof(command2), &stmt, nullptr);
+	CHECK_SQL_ERROR(rc, );
+
+	rc = sqlite3_bind_int(stmt, 1, id);
+	CHECK_SQL_ERROR(rc, );
+
+	rc = sqlite3_step(stmt);
+	CHECK_SQL_ERROR(rc, );
+
+	rc = sqlite3_finalize(stmt);
+	CHECK_SQL_ERROR(rc, );
 }
 SQLDataBasePlaces::~SQLDataBasePlaces()
 {
