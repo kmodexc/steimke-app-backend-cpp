@@ -41,7 +41,8 @@ SQLDataBasePlaces::SQLDataBasePlaces()
 		const char command[] = "CREATE TABLE Places("
 							   "ID 			INT		,"
 							   "state		int		,"
-							   "name		text	)";
+							   "name		text	,"
+							   "creatorId	int		)";
 
 		char *errmsg;
 		if (sqlite3_exec(db, command, 0, nullptr, &errmsg) != SQLITE_OK)
@@ -59,9 +60,9 @@ SQLDataBasePlaces::SQLDataBasePlaces()
 		// create table if db was created
 		// place members table
 		const char command2[] = "CREATE TABLE PlaceMembers("
-							   "ID 			INT		,"
-							   "type		int		,"
-							   "member		int		)";
+								"ID 		INT		,"
+								"type		int		,"
+								"member		int		)";
 
 		if (sqlite3_exec(db, command2, 0, nullptr, &errmsg) != SQLITE_OK)
 		{
@@ -85,8 +86,8 @@ void SQLDataBasePlaces::add(Place &it)
 	}
 	stdlock lock(mtx);
 
-	const char command[] = "INSERT INTO Places (ID,state,name) "
-						   "VALUES (?1,?2,?3)";
+	const char command[] = "INSERT INTO Places (ID,state,name,creatorId) "
+						   "VALUES (?1,?2,?3,?4)";
 	sqlite3_stmt *stmt;
 	int rc = sqlite3_prepare_v2(db, command, sizeof(command), &stmt, nullptr);
 	CHECK_SQL_ERROR(rc, );
@@ -96,6 +97,8 @@ void SQLDataBasePlaces::add(Place &it)
 	rc = sqlite3_bind_int(stmt, 2, (int)it.type);
 	CHECK_SQL_ERROR(rc, );
 	rc = sqlite3_bind_text(stmt, 3, it.name.c_str(), it.name.length(), SQLITE_TRANSIENT);
+	CHECK_SQL_ERROR(rc, );
+	rc = sqlite3_bind_int(stmt, 4, it.creatorId);
 	CHECK_SQL_ERROR(rc, );
 
 	rc = sqlite3_step(stmt);
@@ -111,7 +114,7 @@ void SQLDataBasePlaces::add(Place &it)
 		// set members
 
 		const char command2[] = "INSERT INTO PlaceMembers (ID,type,member) "
-							   "VALUES (?1,?2,?3)";
+								"VALUES (?1,?2,?3)";
 
 		for (unsigned int cnt = 0; cnt < it.members.size(); cnt++)
 		{
@@ -156,11 +159,13 @@ Place SQLDataBasePlaces::get(int id)
 
 	PlaceType state = (PlaceType)sqlite3_column_int(stmt, 1);
 	std::string name = TO_CPP_STRING(sqlite3_column_text(stmt, 2));
+	int creatorId = sqlite3_column_int(stmt, 3);
 
 	Place it;
 	it.id = id;
 	it.name = name;
 	it.type = state;
+	it.creatorId = creatorId;
 
 	rc = sqlite3_finalize(stmt);
 	CHECK_SQL_ERROR(rc, Place());
@@ -181,10 +186,10 @@ Place SQLDataBasePlaces::get(int id)
 		CHECK_SQL_ERROR(rc, Place());
 
 		rc = sqlite3_step(stmt);
-			CHECK_SQL_ERROR(rc, Place());
+		CHECK_SQL_ERROR(rc, Place());
 		while (rc == SQLITE_ROW)
 		{
-			it.members.push_back(sqlite3_column_int(stmt,1));
+			it.members.push_back(sqlite3_column_int(stmt, 1));
 			rc = sqlite3_step(stmt);
 			CHECK_SQL_ERROR(rc, Place());
 		}
