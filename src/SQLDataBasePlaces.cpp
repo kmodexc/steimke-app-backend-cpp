@@ -274,7 +274,7 @@ void SQLDataBasePlaces::del(int id)
 
 	char command2[] = "DELETE FROM PlaceMembers WHERE ID=?1";
 	stmt = nullptr;
-	int rc = sqlite3_prepare_v2(db, command2, sizeof(command2), &stmt, nullptr);
+	rc = sqlite3_prepare_v2(db, command2, sizeof(command2), &stmt, nullptr);
 	CHECK_SQL_ERROR(rc, );
 
 	rc = sqlite3_bind_int(stmt, 1, id);
