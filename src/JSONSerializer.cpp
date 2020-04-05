@@ -67,10 +67,10 @@ void JSONSerializer::fromJSON(const std::string &str, Item *itout)
 		getFromJSON(j, &createTime, "createtime");
 	TimeStamp assignedTime;
 	if (!j["assignedtime"].is_null())
-		getFromJSON(j, &createTime, "assignedtime");
+		getFromJSON(j, &assignedTime, "assignedtime");
 	TimeStamp finishedTime;
 	if (!j["finishedtime"].is_null())
-		getFromJSON(j, &createTime, "finishedtime");
+		getFromJSON(j, &finishedTime, "finishedtime");
 
 	Item it(id, state, name, shortdesc, desc, assid, creaid, prio, wl, placeid, createTime, assignedTime, finishedTime);
 	*itout = it;
