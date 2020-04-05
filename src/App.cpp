@@ -169,6 +169,14 @@ bool App::post(IConHandle *soc, std::string path, std::string content)
 	if(path.find("/api/item") == 0){
 		Item it;
 		ser->fromJSON(content,&it);
+
+		// check if valid 
+		User creator = dbuser->get(it.getCreatorID());
+		if(creator.getId() <= 0 || creator.getName().length() <= 3){
+			ok(soc,"");
+			return false;
+		}
+
 		dbitem->add(it);
 		ok(soc,"");
 		return true;
@@ -176,6 +184,14 @@ bool App::post(IConHandle *soc, std::string path, std::string content)
 	if(path.find("/api/user") == 0){
 		User it;
 		ser->fromJSON(content,&it);
+
+		// check if valid
+		User creator = it;
+		if(creator.getId() <= 0 || creator.getName().length() <= 3){
+			ok(soc,"");
+			return false;
+		}
+
 		dbuser->add(it);
 		ok(soc,"");
 		return true;
@@ -183,6 +199,14 @@ bool App::post(IConHandle *soc, std::string path, std::string content)
 	if(path.find("/api/place") == 0){
 		Place it;
 		ser->fromJSON(content,&it);
+
+		// check if valid
+		User creator = dbuser->get(it.creatorId);
+		if(creator.getId() <= 0 || creator.getName().length() <= 3){
+			ok(soc,"");
+			return false;
+		}
+
 		dbplaces->add(it);
 		ok(soc,"");
 		return true;

@@ -107,6 +107,7 @@ User SQLDataBaseUser::get(int id)
 	rc = sqlite3_step(stmt);
 	CHECK_SQL_ERROR(rc, User());
 
+	id = sqlite3_column_int(stmt, 0);
 	UserState state = (UserState)sqlite3_column_int(stmt, 1);
 	std::string name = TO_CPP_STRING(sqlite3_column_text(stmt, 2));
 	int wl = sqlite3_column_int(stmt, 3);
