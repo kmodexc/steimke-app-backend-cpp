@@ -28,16 +28,17 @@ void HTTPSocket::init(IConHandler *handler, int port)
 
 	options[0].name = "listening_ports";
 	options[0].value = str_port;
-	// options[1].name = "ssl_certificate";
-	// options[1].value = "server.pem";
+	options[1].name = "ssl_certificate";
+	options[1].value = "server.pem";
 	// options[2].name = "ssl_protocol_version";
 	// options[2].value = "3";
 
-	snprintf(str_port,sizeof(str_port),"%d",port);
+	// configure port for http and port+1 for https
+	snprintf(str_port,sizeof(str_port),"%d, %ds",port,(port+1));
 
 	callbacks.begin_request = HTTPSocket::begin_request_handler;
 
-	cout << "Initialized Socket on port " << port << endl;
+	cout << "Initialized Socket on port " << str_port << endl;
 }
 
 void HTTPSocket::run()

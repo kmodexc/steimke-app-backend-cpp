@@ -15,7 +15,7 @@ private:
 	lh_ctx_t *ctx;
 	lh_clb_t callbacks;
 	lh_opt_t options[5];
-	char str_port[10];
+	char str_port[50];
 
 	// local variables for interface to ui
 private:
