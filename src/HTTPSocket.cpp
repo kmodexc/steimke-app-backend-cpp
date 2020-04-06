@@ -34,7 +34,9 @@ void HTTPSocket::init(IConHandler *handler, int port)
 	// options[2].value = "3";
 
 	// configure port for http and port+1 for https
-	snprintf(str_port,sizeof(str_port),"%d, %ds",port,(port+1));
+	//snprintf(str_port,sizeof(str_port),"%d, %ds",port,(port+1));
+	// alternativ without https
+	snprintf(str_port,sizeof(str_port),"%d",port);
 
 	callbacks.begin_request = HTTPSocket::begin_request_handler;
 
