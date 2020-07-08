@@ -1,5 +1,8 @@
 #include "HTTPSocket.h"
 #include <libhttp.h>
+#include <chrono>
+#include <thread>
+#include <limits>
 
 using namespace std;
 
@@ -52,7 +55,9 @@ void HTTPSocket::run()
 	ctx = httplib_start(&callbacks, this, options);
 	if(getchar() == 'q')
 		return;
-	while(true);
+	while(true){
+		std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::hours(std::numeric_limits<int>::max()));
+	}
 }
 
 void HTTPSocket::close()
