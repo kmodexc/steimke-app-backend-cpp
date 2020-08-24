@@ -41,6 +41,8 @@ SQLDataBaseUser::SQLDataBaseUser()
 							   "ID 			INT		,"
 							   "state		int		,"
 							   "name		text	,"
+							   "pw			text	,"
+							   "email		text	,"
 							   "wl			int		)";
 
 		char *errmsg;
@@ -66,19 +68,23 @@ void SQLDataBaseUser::add(User &it)
 	}
 	stdlock lock(mtx);
 
-	const char command[] = "INSERT INTO Users (ID,state,name,wl) "
-						   "VALUES (?1,?2,?3,?4)";
+	const char command[] = "INSERT INTO Users (ID,state,name,pw,email,wl) "
+						   "VALUES (@ID,@state,@name,@pw,@email,@wl)";
 	sqlite3_stmt *stmt;
 	int rc = sqlite3_prepare_v2(db, command, sizeof(command), &stmt, nullptr);
 	CHECK_SQL_ERROR(rc, );
 
-	rc = sqlite3_bind_int(stmt, 1, it.getId());
+	rc = sqlite3_bind_int(stmt, sqlite3_bind_parameter_index(stmt,"@ID"), it.getId());
 	CHECK_SQL_ERROR(rc, );
-	rc = sqlite3_bind_int(stmt, 2, (int)it.getState());
+	rc = sqlite3_bind_int(stmt, sqlite3_bind_parameter_index(stmt,"@state"), (int)it.getState());
 	CHECK_SQL_ERROR(rc, );
-	rc = sqlite3_bind_text(stmt, 3, it.getName().c_str(), it.getName().length(), SQLITE_TRANSIENT);
+	rc = sqlite3_bind_text(stmt, sqlite3_bind_parameter_index(stmt,"@name"), it.getName().c_str(), it.getName().length(), SQLITE_TRANSIENT);
 	CHECK_SQL_ERROR(rc, );
-	rc = sqlite3_bind_int(stmt, 4, it.getWorkload());
+	rc = sqlite3_bind_text(stmt, sqlite3_bind_parameter_index(stmt,"@pw"), it.getPassword().c_str(), it.getPassword().length(), SQLITE_TRANSIENT);
+	CHECK_SQL_ERROR(rc, );
+	rc = sqlite3_bind_text(stmt, sqlite3_bind_parameter_index(stmt,"@email"), it.getEmail().c_str(), it.getEmail().length(), SQLITE_TRANSIENT);
+	CHECK_SQL_ERROR(rc, );
+	rc = sqlite3_bind_int(stmt, sqlite3_bind_parameter_index(stmt,"@wl"), it.getWorkload());
 	CHECK_SQL_ERROR(rc, );
 
 	rc = sqlite3_step(stmt);
@@ -110,9 +116,11 @@ User SQLDataBaseUser::get(int id)
 	id = sqlite3_column_int(stmt, 0);
 	UserState state = (UserState)sqlite3_column_int(stmt, 1);
 	std::string name = TO_CPP_STRING(sqlite3_column_text(stmt, 2));
-	int wl = sqlite3_column_int(stmt, 3);
+	std::string pw = TO_CPP_STRING(sqlite3_column_text(stmt, 3));
+	std::string email = TO_CPP_STRING(sqlite3_column_text(stmt, 4));
+	int wl = sqlite3_column_int(stmt, 5);
 
-	User it(id, name, state, wl);
+	User it(id, name,pw,email, state, wl);
 
 	rc = sqlite3_finalize(stmt);
 	CHECK_SQL_ERROR(rc, User());

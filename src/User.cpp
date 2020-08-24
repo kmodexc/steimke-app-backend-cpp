@@ -31,13 +31,15 @@ UserState parseUserState(const std::string &str)
 	}
 	return UserState::user;
 }
-User::User() : User(0, "", UserState::guest, 0)
+User::User() : User(0, "", "","",UserState::guest, 0)
 {
 }
-User::User(int id, std::string name, UserState state, int workload)
+User::User(int id, std::string name, std::string password,std::string email,UserState state, int workload)
 {
 	this->id = id;
 	this->name = name;
+	this->password = password;
+	this->email = email;
 	this->state = state;
 	this->workload = workload;
 }
@@ -48,6 +50,12 @@ int User::getId() const
 std::string User::getName() const
 {
 	return name;
+}
+std::string User::getPassword() const{
+	return password;
+}
+std::string User::getEmail() const{
+	return email;
 }
 UserState User::getState() const
 {

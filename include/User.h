@@ -18,13 +18,17 @@ class User
 {
 	int id;
 	std::string name;
+	std::string password;
+	std::string email;
 	UserState state;
 	int workload;
 public:
 	User();
-	User(int id,std::string name,UserState state,int workload);
+	User(int id,std::string name,std::string password,std::string email,UserState state,int workload);
 	int getId() const;
 	std::string getName() const;
+	std::string getPassword() const;
+	std::string getEmail() const;
 	UserState getState() const;
 	int getWorkload() const;
 };
