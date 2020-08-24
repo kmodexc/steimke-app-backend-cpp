@@ -15,6 +15,7 @@ class App : public IConHandler{
 	IDataBase<Place>* dbplaces;
 protected:
 	static void ok(IConHandle* con,std::string content);
+	static void nok(IConHandle* con,std::string content);
 public:
 	App();
 	bool initialize(int argc,char *argv[]);

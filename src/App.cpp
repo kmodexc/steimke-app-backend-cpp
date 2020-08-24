@@ -59,6 +59,21 @@ void App::ok(IConHandle* soc, std::string content)
 
 	soc->send(message); 
 }
+void App::nok(IConHandle* soc, std::string content){
+	std::stringstream ss;
+	ss << "HTTP/1.1 404 NoRequestHandler\r\n";
+	ss << "Content-Type: application/json\r\n";
+	ss << "Content-Length: " << content.length() << "\r\n";
+	ss << "\r\n";
+	ss << content;
+
+	std::string message = ss.str();
+
+	cout << "Sending this:" << endl;
+	cout << message << endl;
+
+	soc->send(message); 
+}
 bool App::get(IConHandle *soc, std::string path)
 {
 	// answer if item is requested
@@ -147,19 +162,22 @@ bool App::put(IConHandle *soc, std::string path, std::string content)
 		dbitem->update(it);
 		ok(soc,"");
 		return true;
-	}
+	}else
 	if(path.find("/api/user/") == 0){
 		User it;
 		ser->fromJSON(content,&it);
 		dbuser->update(it);
 		ok(soc,"");
 		return true;
-	}
+	}else
 	if(path.find("/api/place/") == 0){
 		Place it;
 		ser->fromJSON(content,&it);
 		dbplaces->update(it);
 		ok(soc,"");
+		return true;
+	}else{
+		nok(soc,"no handler");
 		return true;
 	}
 	return false;
@@ -180,7 +198,7 @@ bool App::post(IConHandle *soc, std::string path, std::string content)
 		dbitem->add(it);
 		ok(soc,"");
 		return true;
-	}
+	}else
 	if(path.find("/api/user") == 0){
 		User it;
 		ser->fromJSON(content,&it);
@@ -195,7 +213,7 @@ bool App::post(IConHandle *soc, std::string path, std::string content)
 		dbuser->add(it);
 		ok(soc,"");
 		return true;
-	}
+	}else
 	if(path.find("/api/place") == 0){
 		Place it;
 		ser->fromJSON(content,&it);
@@ -210,6 +228,9 @@ bool App::post(IConHandle *soc, std::string path, std::string content)
 		dbplaces->add(it);
 		ok(soc,"");
 		return true;
+	} else{
+		nok(soc,"no handler");
+		return true;+
 	}
 	return false;
 }
