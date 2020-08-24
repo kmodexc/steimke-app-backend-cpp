@@ -230,7 +230,7 @@ bool App::post(IConHandle *soc, std::string path, std::string content)
 		return true;
 	} else{
 		nok(soc,"no handler");
-		return true;+
+		return true;
 	}
 	return false;
 }
