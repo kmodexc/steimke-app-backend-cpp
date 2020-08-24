@@ -177,7 +177,7 @@ bool App::put(IConHandle *soc, std::string path, std::string content)
 		ok(soc,"");
 		return true;
 	}else{
-		nok(soc,"no handler");
+		nok(soc,std::string("no handler (path:")+path+std::string(" ; type PUT)"));
 		return true;
 	}
 	return false;
@@ -229,7 +229,7 @@ bool App::post(IConHandle *soc, std::string path, std::string content)
 		ok(soc,"");
 		return true;
 	} else{
-		nok(soc,"no handler");
+		nok(soc,std::string("no handler (path:")+path+std::string(" ; type POST)"));
 		return true;
 	}
 	return false;
