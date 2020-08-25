@@ -61,7 +61,7 @@ void App::ok(IConHandle* soc, std::string content)
 }
 void App::nok(IConHandle* soc, std::string content){
 	std::stringstream ss;
-	ss << "HTTP/1.1 404 NoRequestHandler\r\n";
+	ss << "HTTP/1.1 404 SomeError\r\n";
 	ss << "Content-Type: application/json\r\n";
 	ss << "Content-Length: " << content.length() << "\r\n";
 	ss << "\r\n";
@@ -160,21 +160,21 @@ bool App::put(IConHandle *soc, std::string path, std::string content)
 		Item it;
 		ser->fromJSON(content,&it);
 		dbitem->update(it);
-		ok(soc,"");
+		ok(soc,"put item ok");
 		return true;
 	}else
 	if(path.find("/api/user/") == 0){
 		User it;
 		ser->fromJSON(content,&it);
 		dbuser->update(it);
-		ok(soc,"");
+		ok(soc,"put user ok");
 		return true;
 	}else
 	if(path.find("/api/place/") == 0){
 		Place it;
 		ser->fromJSON(content,&it);
 		dbplaces->update(it);
-		ok(soc,"");
+		ok(soc,"put place ok");
 		return true;
 	}else{
 		nok(soc,std::string("no handler (path:")+path+std::string(" ; type PUT)"));
@@ -196,7 +196,7 @@ bool App::post(IConHandle *soc, std::string path, std::string content)
 		}
 
 		dbitem->add(it);
-		ok(soc,"");
+		ok(soc,"post item ok");
 		return true;
 	}else
 	if(path.find("/api/user") == 0){
@@ -206,12 +206,12 @@ bool App::post(IConHandle *soc, std::string path, std::string content)
 		// check if valid
 		User creator = it;
 		if(creator.getId() <= 0 || creator.getName().length() <= 3){
-			ok(soc,"");
-			return false;
+			nok(soc,"not valid user");
+			return true;
 		}
 
 		dbuser->add(it);
-		ok(soc,"");
+		ok(soc,"post user ok");
 		return true;
 	}else
 	if(path.find("/api/place") == 0){
@@ -226,7 +226,7 @@ bool App::post(IConHandle *soc, std::string path, std::string content)
 		}
 
 		dbplaces->add(it);
-		ok(soc,"");
+		ok(soc,"post place ok");
 		return true;
 	} else{
 		nok(soc,std::string("no handler (path:")+path+std::string(" ; type POST)"));
@@ -240,21 +240,21 @@ bool App::del(IConHandle *soc, std::string path)
 		int id = -1;
 		sscanf(path.c_str(),"/api/item/%d",&id);
 		dbitem->del(id);
-		ok(soc,"");
+		ok(soc,"del item ok");
 		return true;
 	}
 	if(path.find("/api/user/") == 0){
 		int id = -1;
 		sscanf(path.c_str(),"/api/user/%d",&id);
 		dbuser->del(id);
-		ok(soc,"");
+		ok(soc,"del user ok");
 		return true;
 	}
 	if(path.find("/api/place/") == 0){
 		int id = -1;
 		sscanf(path.c_str(),"/api/place/%d",&id);
 		dbplaces->del(id);
-		ok(soc,"");
+		ok(soc,"del place ok");
 		return true;
 	}
 	return false;
