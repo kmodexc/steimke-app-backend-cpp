@@ -17,11 +17,11 @@ namespace rls
 		j["creatorId"] = item.getCreatorID();
 		j["priority"] = item.getPriority();
 		j["workload"] = item.getWorkload();
-		j["placeid"] = item.getPlaceID();
+		j["placeId"] = item.getPlaceID();
 
-		addToJSON(j, item.getCreateTime(), "createtime");
-		addToJSON(j, item.getAssignedTime(), "assignedtime");
-		addToJSON(j, item.getFinishedTime(), "finishedtime");
+		addToJSON(j, item.getCreateTime(), "createTime");
+		addToJSON(j, item.getAssignedTime(), "assignedTime");
+		addToJSON(j, item.getFinishedTime(), "finishedTime");
 
 		return j.dump();
 	}
@@ -59,18 +59,18 @@ namespace rls
 		if (!j["workload"].is_null())
 			wl = j["workload"].get<int>();
 		int placeid = -1;
-		if (!j["placeid"].is_null())
-			placeid = j["placeid"].get<int>();
+		if (!j["placeId"].is_null())
+			placeid = j["placeId"].get<int>();
 
 		TimeStamp createTime;
-		if (!j["createtime"].is_null())
-			getFromJSON(j, &createTime, "createtime");
+		if (!j["createTime"].is_null())
+			getFromJSON(j, &createTime, "createTime");
 		TimeStamp assignedTime;
-		if (!j["assignedtime"].is_null())
-			getFromJSON(j, &assignedTime, "assignedtime");
+		if (!j["assignedTime"].is_null())
+			getFromJSON(j, &assignedTime, "assignedTime");
 		TimeStamp finishedTime;
-		if (!j["finishedtime"].is_null())
-			getFromJSON(j, &finishedTime, "finishedtime");
+		if (!j["finishedTime"].is_null())
+			getFromJSON(j, &finishedTime, "finishedTime");
 
 		Item it(id, state, name, shortdesc, desc, assid, creaid, prio, wl, placeid, createTime, assignedTime, finishedTime);
 		*itout = it;
