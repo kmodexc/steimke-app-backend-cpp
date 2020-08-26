@@ -13,15 +13,15 @@ namespace rls
 		j["name"] = item.getName();
 		j["shortdesc"] = item.getShortDiscription();
 		j["desc"] = item.getDescription();
-		j["assignedId"] = item.getAssignedID();
-		j["creatorId"] = item.getCreatorID();
+		j["AssignedId"] = item.getAssignedID();
+		j["CreatorId"] = item.getCreatorID();
 		j["priority"] = item.getPriority();
 		j["workload"] = item.getWorkload();
-		j["placeId"] = item.getPlaceID();
+		j["PlaceId"] = item.getPlaceID();
 
-		addToJSON(j, item.getCreateTime(), "createTime");
-		addToJSON(j, item.getAssignedTime(), "assignedTime");
-		addToJSON(j, item.getFinishedTime(), "finishedTime");
+		addToJSON(j, item.getCreateTime(), "CreateTime");
+		addToJSON(j, item.getAssignedTime(), "AssignedTime");
+		addToJSON(j, item.getFinishedTime(), "FinishedTime");
 
 		return j.dump();
 	}
@@ -47,11 +47,11 @@ namespace rls
 		if (!j["desc"].is_null())
 			desc = j["desc"].get<std::string>();
 		int assid = -1;
-		if (!j["assignedId"].is_null())
-			assid = j["assignedId"].get<int>();
+		if (!j["AssignedId"].is_null())
+			assid = j["AssignedId"].get<int>();
 		int creaid = -1;
-		if (!j["creatorId"].is_null())
-			creaid = j["creatorId"].get<int>();
+		if (!j["CreatorId"].is_null())
+			creaid = j["CreatorId"].get<int>();
 		int prio = -1;
 		if (!j["priority"].is_null())
 			prio = j["priority"].get<int>();
@@ -59,18 +59,18 @@ namespace rls
 		if (!j["workload"].is_null())
 			wl = j["workload"].get<int>();
 		int placeid = -1;
-		if (!j["placeId"].is_null())
-			placeid = j["placeId"].get<int>();
+		if (!j["PlaceId"].is_null())
+			placeid = j["PlaceId"].get<int>();
 
 		TimeStamp createTime;
-		if (!j["createTime"].is_null())
-			getFromJSON(j, &createTime, "createTime");
+		if (!j["CreateTime"].is_null())
+			getFromJSON(j, &createTime, "CreateTime");
 		TimeStamp assignedTime;
-		if (!j["assignedTime"].is_null())
-			getFromJSON(j, &assignedTime, "assignedTime");
+		if (!j["AssignedTime"].is_null())
+			getFromJSON(j, &assignedTime, "AssignedTime");
 		TimeStamp finishedTime;
-		if (!j["finishedTime"].is_null())
-			getFromJSON(j, &finishedTime, "finishedTime");
+		if (!j["FinishedTime"].is_null())
+			getFromJSON(j, &finishedTime, "FinishedTime");
 
 		Item it(id, state, name, shortdesc, desc, assid, creaid, prio, wl, placeid, createTime, assignedTime, finishedTime);
 		*itout = it;
