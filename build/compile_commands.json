@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/marius/Code/restlesserver/build",
-  "command": "/usr/bin/g++-8   -I/home/marius/Code/restlesserver/modules/json/single_include  -g   -std=gnu++11 -o CMakeFiles/rlserv.dir/main.cpp.o -c /home/marius/Code/restlesserver/main.cpp",
-  "file": "/home/marius/Code/restlesserver/main.cpp"
-}
-]
