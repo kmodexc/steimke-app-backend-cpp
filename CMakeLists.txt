@@ -24,7 +24,7 @@ list(APPEND EXTRA_LIBS "${PROJECT_SOURCE_DIR}/modules/libhttp/lib/libhttp.a")
 list(APPEND EXTRA_LIBS nlohmann_json::nlohmann_json)
 list(APPEND EXTRA_LIBS pthread)
 list(APPEND EXTRA_LIBS ${CMAKE_DL_LIBS})
-list(APPEND EXTRA_LIBS Sqlite3)
+list(APPEND EXTRA_LIBS SQLite3)
 
 list(APPEND SOURCES src/App.cpp)
 list(APPEND SOURCES src/ConHandle.cpp)
