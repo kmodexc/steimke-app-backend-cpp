@@ -6,3 +6,4 @@ modules/sqlite3_amalgation/
 sqlite3.h
 sqlite3.c
 modules/bld/
+build/
