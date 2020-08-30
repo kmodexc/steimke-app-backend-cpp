@@ -2,7 +2,5 @@
 obj/
 bin/
 *.sqlite
-sqlite3.h
-sqlite3.c
 modules/bld/
 build/
