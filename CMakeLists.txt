@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.10.0)
 project(rlserv VERSION 0.1.0)
 
 # configure a header file to pass some of the CMake settings
@@ -49,7 +49,5 @@ target_link_libraries(rlserv PUBLIC  ${EXTRA_LIBS})
 
 
 install(TARGETS rlserv DESTINATION bin)
-install(FILES "${PROJECT_BINARY_DIR}/CmakeConfig.h"
-  DESTINATION include
-  )
+install(FILES "${PROJECT_BINARY_DIR}/CmakeConfig.h" DESTINATION include)
 
