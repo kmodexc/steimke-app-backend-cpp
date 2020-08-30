@@ -1,0 +1,3 @@
+// the configured options and settings for Tutorial
+#define RLSERV_VERSION_MAJOR @rlserv_VERSION_MAJOR@
+#define RLSERV_VERSION_MINOR @rlserv_VERSION_MINOR@
