@@ -1,10 +1,10 @@
 find_package (SQLite3 REQUIRED)
-if (SQLITE3_FOUND)
+if (SQLite3_FOUND)
 	list(APPEND EXTRA_INCLUDES ${SQLite3_INCLUDE_DIRS})
 	list(APPEND EXTRA_LIBS ${SQLite3_LIBRARIES})
-else(SQLITE3_FOUND)
+else(SQLite3_FOUND)
 	message( FATAL_ERROR "SQLite3 not found!!!!" )
-endif (SQLITE3_FOUND)
+endif (SQLite3_FOUND)
 
 list(APPEND EXTRA_INCLUDES ${PROJECT_BINARY_DIR})
 list(APPEND EXTRA_INCLUDES "${PROJECT_SOURCE_DIR}/modules/libhttp/include")

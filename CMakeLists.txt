@@ -15,5 +15,11 @@ set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(CPack)
 
-add_subdirectory(modules)
+add_subdirectory(modules/json)
 add_subdirectory(src)
+
+install(TARGETS rlserv DESTINATION bin)
+install(FILES "${PROJECT_BINARY_DIR}/CmakeConfig.h"
+  DESTINATION include
+  )
+
