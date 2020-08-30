@@ -1,17 +1,10 @@
-find_package (SQLite3 REQUIRED)
-if (SQLite3_FOUND)
-	list(APPEND EXTRA_INCLUDES ${SQLite3_INCLUDE_DIRS})
-	list(APPEND EXTRA_LIBS ${SQLite3_LIBRARIES})
-else(SQLite3_FOUND)
-	message( FATAL_ERROR "SQLite3 not found!!!!" )
-endif (SQLite3_FOUND)
-
 list(APPEND EXTRA_INCLUDES ${PROJECT_BINARY_DIR})
 list(APPEND EXTRA_INCLUDES "${PROJECT_SOURCE_DIR}/modules/libhttp/include")
 list(APPEND EXTRA_LIBS "${PROJECT_SOURCE_DIR}/modules/libhttp/lib/libhttp.a")
 list(APPEND EXTRA_LIBS nlohmann_json::nlohmann_json)
 list(APPEND EXTRA_LIBS pthread)
 list(APPEND EXTRA_LIBS ${CMAKE_DL_LIBS})
+list(APPEND EXTRA_LIBS Sqlite3)
 
 list(APPEND SOURCES App.cpp)
 list(APPEND SOURCES ConHandle.cpp)
