@@ -17,3 +17,9 @@ include(CPack)
 
 add_subdirectory(modules/json)
 add_subdirectory(src)
+
+install(TARGETS rlserv DESTINATION bin)
+install(FILES "${PROJECT_BINARY_DIR}/CmakeConfig.h"
+  DESTINATION include
+  )
+
