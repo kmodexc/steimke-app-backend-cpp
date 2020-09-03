@@ -1,0 +1,8 @@
+list(APPEND DATASTORE_SOURCES DBItem.cpp)
+list(APPEND DATASTORE_SOURCES MockDataStore.cpp)
+list(APPEND DATASTORE_SOURCES SQLDataBaseItem.cpp)
+list(APPEND DATASTORE_SOURCES SQLDataBasePlaces.cpp)
+list(APPEND DATASTORE_SOURCES SQLDataBaseUser.cpp)
+add_library(DataStore ${DATASTORE_SOURCES})
+target_include_directories(DataStore INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(DataStore PUBLIC Models pthread SQLite3)

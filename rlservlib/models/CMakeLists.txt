@@ -1,0 +1,5 @@
+list(APPEND MODELS_SOURCES Item.cpp)
+list(APPEND MODELS_SOURCES Place.cpp)
+list(APPEND MODELS_SOURCES User.cpp)
+add_library(Models ${MODELS_SOURCES})
+target_include_directories(Models INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

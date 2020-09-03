@@ -1,0 +1,8 @@
+list(APPEND WEBSERVICE_SOURCES ConHandle.cpp)
+list(APPEND WEBSERVICE_SOURCES HTTPSocket.cpp)
+list(APPEND WEBSERVICE_SOURCES SimpleConHandle.cpp)
+list(APPEND WEBSERVICE_SOURCES SimpleSocket.cpp)
+add_library(WebService ${WEBSERVICE_SOURCES})
+target_include_directories(WebService INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(WebService PUBLIC Models pthread "${PROJECT_SOURCE_DIR}/modules/libhttp/lib/libhttp.a")
+target_include_directories(WebService PUBLIC include "${PROJECT_SOURCE_DIR}/modules/libhttp/include")
