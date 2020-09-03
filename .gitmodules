@@ -1,3 +1,9 @@
 [submodule "modules/libhttp"]
 	path = modules/libhttp
 	url = https://github.com/lammertb/libhttp.git
+[submodule "modules/json2"]
+	path = modules/json2
+	url = git@github.com:einsteinmaster/json.git
+[submodule "modules/googletest2"]
+	path = modules/googletest2
+	url = git@github.com:einsteinmaster/googletest.git
