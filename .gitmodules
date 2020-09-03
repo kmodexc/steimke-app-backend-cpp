@@ -7,3 +7,6 @@
 [submodule "modules/sqlite"]
 	path = modules/sqlite
 	url = https://github.com/sqlite/sqlite.git
+[submodule "modules/googletest"]
+	path = modules/googletest
+	url = http://rkp.intecelektro.de
