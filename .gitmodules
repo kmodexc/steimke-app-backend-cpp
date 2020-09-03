@@ -1,12 +1,3 @@
 [submodule "modules/libhttp"]
 	path = modules/libhttp
 	url = https://github.com/lammertb/libhttp.git
-[submodule "modules/json"]
-	path = modules/json
-	url = https://github.com/nlohmann/json.git
-[submodule "modules/sqlite"]
-	path = modules/sqlite
-	url = https://github.com/sqlite/sqlite.git
-[submodule "modules/googletest"]
-	path = modules/googletest
-	url = http://rkp.intecelektro.de
