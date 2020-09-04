@@ -1,15 +1,58 @@
 #include "DependencyService.h"
 #include "App.h"
+#include "MockConHandle.h"
 #include "gtest/gtest.h"
 
 using namespace rls;
 
 TEST(TestItemAll, ItemTest1)
 {
+	TimeStamp created, assigned, finished;
+	created.year = 11;
+	created.month = 12;
+	created.day = 13;
+	created.hour = 14;
+	created.day = 15;
+	assigned.year = 21;
+	assigned.month = 22;
+	assigned.day = 23;
+	assigned.hour = 24;
+	assigned.day = 25;
+	finished.year = 31;
+	finished.month = 32;
+	finished.day = 33;
+	finished.hour = 34;
+	finished.day = 35;
+	int creatorID = 1;
+	Item it(234, ItemState::inprogress, "test", "shortdesc", "desc", 2, creatorID, 3, 4, 5, created, assigned, finished);
+
+	// create string rep of item
+	std::string contentstr = "";
+	DependencyService dep;
+	auto jsonconv = dep.getJSONSerializer();
+	contentstr = jsonconv->toJSON(it);
+
+	// add user to add this to make it valid
+	auto userdb = dep.getDataBaseUser();
+	User admin(1,"admin","pw","em",UserState::admin,0);
+	userdb->add(admin);
+
+
 	rls::App app;
 	char portstr[] = "9999";
 	char *arr[] = {nullptr, portstr};
 	app.initialize(2, arr);
+
+	MockConHandle con;
+
+	EXPECT_TRUE(app.post(&con,"/api/item",contentstr));
+	con.send_content.clear();
+	EXPECT_TRUE(app.get(&con,"/api/item/234"));
+	//EXPECT_EQ(con.send_content,contentstr);
+
+	// cleanup
+	EXPECT_TRUE(app.del(&con,"/api/item/234"));
+	EXPECT_TRUE(app.del(&con,"/api/user/1"));
 }
 
 TEST(TestItemDB, ItemAddGet)
