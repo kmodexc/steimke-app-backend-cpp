@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.10.0)
 project(rlservlib VERSION 0.1.0)
+# to add shared library in own project
 cmake_policy(SET CMP0079 NEW)
 
 
