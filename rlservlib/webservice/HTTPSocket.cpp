@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <limits>
+#include "spdlog/spdlog.h"
 
 using namespace std;
 
@@ -43,13 +44,13 @@ void HTTPSocket::init(IConHandler *handler, int port)
 
 	callbacks.begin_request = HTTPSocket::begin_request_handler;
 
-	cout << "Initialized Socket on port " << str_port << endl;
+	spdlog::info("Initialized Socket on port {}",str_port);
 }
 
 void HTTPSocket::run()
 {
 	if(ctx != nullptr){
-		std::cerr << "Already started a httpserver" << std::endl;
+		spdlog::error("Already started a httpserver");
 		return;
 	}
 	ctx = httplib_start(&callbacks, this, options);
@@ -75,9 +76,11 @@ int HTTPSocket::begin_request_handler(lh_ctx_t *ctx, lh_con_t *con)
 
 	std::string req_method = request_info->request_method;
 
-	cout << "Incoming " << req_method << " request" << endl;
-	for(int cnt=0;cnt < request_info->num_headers ; cnt++)
-		cout << "Header " << request_info->http_headers[cnt].name << "\t" << request_info->http_headers[cnt].value << endl;
+	spdlog::debug("Incoming {} request",req_method);
+	for(int cnt=0;cnt < request_info->num_headers ; cnt++){
+		auto header_prop = request_info->http_headers[cnt];
+		spdlog::debug("HEADER {}   VALUE: {}",header_prop.name,header_prop.value);
+	}		
 
 	// if path has apk in it its probably getting the file
 	std::string path = request_info->local_uri;
@@ -119,16 +122,16 @@ std::string HTTPSocket::getContent(lh_ctx_t *ctx,lh_con_t* con)
 {
 	std::string content;
 	if(httplib_get_request_info(con)->content_length > 0){
-		cout << "found data with len " << httplib_get_request_info(con)->content_length << endl;
+		spdlog::debug("found data with len {}",httplib_get_request_info(con)->content_length);
 		char buffer[100];
 		memset(buffer,0,sizeof(buffer));
 		while(httplib_read(ctx,con,buffer,sizeof(buffer)-2)){
 			content += buffer;
 			memset(buffer,0,sizeof(buffer));
 		}
-		cout << content << endl;
+		spdlog::debug("content: {}",content);
 	}
-	else cout << "no content" << endl;
+	else spdlog::debug("no content");
 	return content;
 }
 
