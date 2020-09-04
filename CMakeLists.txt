@@ -21,7 +21,7 @@ add_subdirectory(gtest)
 add_executable(rlserv main.cpp )
 
 target_include_directories(rlserv PUBLIC include ${PROJECT_BINARY_DIR})
-target_link_libraries(rlserv PUBLIC rlservlib )
+target_link_libraries(rlserv PUBLIC rlservlib spdlog)
 
 install(TARGETS rlserv DESTINATION bin)
 install(FILES "${PROJECT_BINARY_DIR}/CmakeConfig.h" DESTINATION include)

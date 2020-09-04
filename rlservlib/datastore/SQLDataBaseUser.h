@@ -2,7 +2,6 @@
 #include "IDataBase.h"
 #include "User.h"
 #include <sqlite3.h>
-#include <iostream>
 #include <mutex>
 #include <fstream>
 

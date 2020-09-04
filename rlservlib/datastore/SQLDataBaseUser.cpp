@@ -1,9 +1,10 @@
 #include "SQLDataBaseUser.h"
+#include "spdlog/spdlog.h"
 
 #define CHECK_SQL_ERROR(returncode, errorRetVal)                                          \
 	if (returncode != SQLITE_OK && returncode != SQLITE_DONE && returncode != SQLITE_ROW) \
 	{                                                                                     \
-		cerr << "SQL error(" << returncode << "): " << sqlite3_errmsg(db) << endl;        \
+		spdlog::error("SQL error({}): {}",returncode,sqlite3_errmsg(db));			      \
 		sqlite3_close(db);                                                                \
 		db = nullptr;                                                                     \
 		return errorRetVal;                                                               \
@@ -48,10 +49,11 @@ SQLDataBaseUser::SQLDataBaseUser()
 		char *errmsg;
 		if (sqlite3_exec(db, command, 0, nullptr, &errmsg) != SQLITE_OK)
 		{
-			cerr << "error creating table" << endl;
 			if (errmsg)
 			{
-				cerr << "errormessage: " << errmsg << endl;
+				spdlog::error("error creating table; message={}",errmsg);
+			}else{
+				spdlog::error("error creating table; nomsg");
 			}
 			sqlite3_close(db);
 			db = nullptr;
@@ -63,7 +65,7 @@ void SQLDataBaseUser::add(User &it)
 {
 	if (db == nullptr)
 	{
-		cerr << "Database closed" << endl;
+		spdlog::error("Database closed");
 		return;
 	}
 	stdlock lock(mtx);
@@ -97,7 +99,7 @@ User SQLDataBaseUser::get(int id)
 {
 	if (db == nullptr)
 	{
-		cerr << "Database closed" << endl;
+		spdlog::error("Database closed");
 		return User();
 	}
 	stdlock lock(mtx);
@@ -131,7 +133,7 @@ std::vector<int> SQLDataBaseUser::getIDs()
 {
 	if (db == nullptr)
 	{
-		cerr << "Database closed" << endl;
+		spdlog::error("Database closed");
 		return std::vector<int>();
 	}
 	stdlock lock(mtx);
@@ -153,7 +155,7 @@ std::vector<int> SQLDataBaseUser::getIDs()
 
 	rc = sqlite3_finalize(stmt);
 	CHECK_SQL_ERROR(rc, std::vector<int>());
-	cout << "Found " << retval.size() << " User in DB" << endl;
+	spdlog::debug("Found {} Users in DB" , retval.size());
 	return retval;
 }
 std::vector<User> SQLDataBaseUser::getAll()
@@ -167,7 +169,7 @@ std::vector<User> SQLDataBaseUser::getAll()
 	{
 		retval.push_back(get(id));
 	}
-	cout << "Return " << retval.size() << " User" << endl;
+	spdlog::debug("Return {} Users" , retval.size());
 	return retval;
 }
 void SQLDataBaseUser::update(User &it)
@@ -180,7 +182,7 @@ void SQLDataBaseUser::del(int id)
 {
 	if (db == nullptr)
 	{
-		cerr << "Database closed" << endl;
+		spdlog::error("Database closed");
 		return;
 	}
 	stdlock lock(mtx);

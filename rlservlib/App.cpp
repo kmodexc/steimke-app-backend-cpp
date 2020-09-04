@@ -1,4 +1,5 @@
 #include "App.h"
+#include "spdlog/spdlog.h"
 
 using namespace std;
 
@@ -34,14 +35,13 @@ namespace rls
 	{
 		try
 		{
-			cout << "Starting Server" << endl;
+			spdlog::info("Starting Server");
 			soc->run();
-			cout << "Server finished without exception" << endl;
+			spdlog::info("Server finished without exception");
 		}
 		catch (exception &exc)
 		{
-			cerr << "Exception in Application trying to run soccet" << endl;
-			cerr << exc.what() << endl;
+			spdlog::error("Exception in Application trying to run soccet. Message={}",exc.what());
 		}
 	}
 	void App::ok(IConHandle *soc, std::string content)
@@ -58,8 +58,7 @@ namespace rls
 
 		std::string message = ss.str();
 
-		cout << "Sending this:" << endl;
-		cout << message << endl;
+		spdlog::debug("Sending this: {}",message);
 
 		soc->send(message);
 	}
@@ -77,8 +76,7 @@ namespace rls
 
 		std::string message = ss.str();
 
-		cout << "Sending this:" << endl;
-		cout << message << endl;
+		spdlog::debug("Sending this: {}",message);
 
 		soc->send(message);
 	}

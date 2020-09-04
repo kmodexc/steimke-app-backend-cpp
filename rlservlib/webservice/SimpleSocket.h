@@ -5,7 +5,6 @@
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
-#include <iostream>
 #include <string.h>
 #include <thread>
 #include <sstream>

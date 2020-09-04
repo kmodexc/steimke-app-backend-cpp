@@ -1,6 +1,6 @@
 #include "App.h"
 #include "CmakeConfig.h"
-#include <iostream>
+#include "spdlog/spdlog.h"
 
 using namespace std;
 using namespace rls;
@@ -8,8 +8,7 @@ using namespace rls;
 int main(int argc,char *argv[])
 {
 	// report version
-    std::cout << argv[0] << " Version " << RLSERV_VERSION_MAJOR << "."
-              << RLSERV_VERSION_MINOR << std::endl;
+    spdlog::info("HeySteimke Server: {} ; Version: {}.{}", argv[0],RLSERV_VERSION_MAJOR,RLSERV_VERSION_MINOR);
 
 	App *app = nullptr;
 	try{
@@ -18,12 +17,11 @@ int main(int argc,char *argv[])
 			app->run();
 		else
 		{
-			cerr << "Application didnt initialize successful" << endl;
+			spdlog::error("Application didnt initialize successful");
 		}
 		
 	}catch(exception &exc){
-		cerr << "Exception in main" << endl;
-		cerr << exc.what() << endl;
+		spdlog::error("Exception in main: {}",exc.what());
 	}
 	if(app != nullptr)
 		delete app;

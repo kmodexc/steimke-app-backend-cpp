@@ -1,4 +1,5 @@
 #include "SimpleSocket.h"
+#include "spdlog/spdlog.h"
 
 using namespace std;
 
@@ -24,13 +25,13 @@ void SimpleSocket::init(IConHandler *handler, int port)
 	sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (sock == -1)
 	{
-		perror("Socket creation error");
+		spdlog::error("Socket creation error");
 		return;
 	}
 
 	if (bind(sock, (struct sockaddr *)&addr, sizeof(addr)) == -1)
 	{
-		perror("Bind error");
+		spdlog::error("Bind error");
 		::close(sock);
 		return;
 	}
@@ -46,7 +47,7 @@ void SimpleSocket::main_thread(SimpleSocket *mthis)
 {
 	if (listen(mthis->sock, 1 /*length of connections queue*/) == -1)
 	{
-		perror("Listen error");
+		spdlog::error("Listen error");
 		::close(mthis->sock);
 		return;
 	}
@@ -55,18 +56,17 @@ void SimpleSocket::main_thread(SimpleSocket *mthis)
 		int client_sock = accept(mthis->sock, 0, 0);
 		if (client_sock == -1)
 		{
-			cerr << "Accept error" << endl;
+			spdlog::error("Accept error");
 			break;
 		}
 
-		cout << "Accepted client" << endl;
+		spdlog::info("Accepted client");
 
 		SimpleConHandle con(client_sock);
 
 		std::string str_header = con.recv();
 
-		cout << "Header:" << endl;
-		cout << str_header;
+		spdlog::debug("Header: {}",str_header);
 
 		HTTPHeader header = decodeHeader(str_header);
 
@@ -75,9 +75,8 @@ void SimpleSocket::main_thread(SimpleSocket *mthis)
 			std::string content;
 			if (header.contentLength > 0)
 			{
-				cout << "content: " << endl;
 				content = con.recv(header.contentLength);
-				cout << content << endl;
+				spdlog::debug("content: {}",content);
 			}
 
 			if (mthis->handler != nullptr && header.valid)
@@ -100,7 +99,7 @@ void SimpleSocket::main_thread(SimpleSocket *mthis)
 			}
 		}else{
 			con.send("HTTP/1.1 400 Bad Header\r\n\r\n");
-			cerr << "invalid header" << endl;
+			spdlog::error("invalid header");
 		}
 
 		::close(client_sock);

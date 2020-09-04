@@ -3,7 +3,6 @@
 #include "libhttp.h"
 #include <string.h>
 #include <thread>
-#include <iostream>
 #include "ConHandle.h"
 
 namespace rls{

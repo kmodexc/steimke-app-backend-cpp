@@ -1,7 +1,6 @@
 #pragma once
 #include "IDataBase.h"
 #include <sqlite3.h>
-#include <iostream>
 #include <mutex>
 #include <fstream>
 

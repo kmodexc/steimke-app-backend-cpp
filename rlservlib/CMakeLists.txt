@@ -16,6 +16,7 @@ add_subdirectory(jsonconv)
 add_subdirectory(webservice)
 
 list(APPEND EXTRA_LIBS ${CMAKE_DL_LIBS})
+list(APPEND EXTRA_LIBS spdlog)
 list(APPEND EXTRA_LIBS DataStore)
 list(APPEND EXTRA_LIBS JsonConv)
 list(APPEND EXTRA_LIBS Models)

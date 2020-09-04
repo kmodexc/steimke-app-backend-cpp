@@ -1,9 +1,10 @@
 #include "SQLDataBaseItem.h"
+#include "spdlog/spdlog.h"
 
 #define CHECK_SQL_ERROR(returncode, errorRetVal)                                          \
 	if (returncode != SQLITE_OK && returncode != SQLITE_DONE && returncode != SQLITE_ROW) \
 	{                                                                                     \
-		cerr << "SQL error(" << returncode << "): " << sqlite3_errmsg(db) << endl;        \
+		spdlog::error("SQL error({}): {}",returncode,sqlite3_errmsg(db));			      \
 		sqlite3_close(db);                                                                \
 		db = nullptr;                                                                     \
 		return errorRetVal;                                                               \
@@ -74,10 +75,12 @@ SQLDataBaseItem::SQLDataBaseItem()
 		char *errmsg;
 		if (sqlite3_exec(db, command, 0, nullptr, &errmsg) != SQLITE_OK)
 		{
-			cerr << "error creating table" << endl;
+			
 			if (errmsg)
 			{
-				cerr << "errormessage: " << errmsg << endl;
+				spdlog::error("error creating table; message={}",errmsg);
+			}else{
+				spdlog::error("error creating table; nomsg");
 			}
 			sqlite3_close(db);
 			db = nullptr;
@@ -89,7 +92,7 @@ void SQLDataBaseItem::add(Item &it)
 {
 	if (db == nullptr)
 	{
-		cerr << "Database closed" << endl;
+		spdlog::error("Database closed");
 		return;
 	}
 	stdlock lock(mtx);
@@ -205,7 +208,7 @@ Item SQLDataBaseItem::get(int id)
 {
 	if (db == nullptr)
 	{
-		cerr << "Database closed" << endl;
+		spdlog::error("Database closed");
 		return Item();
 	}
 	stdlock lock(mtx);
@@ -297,7 +300,7 @@ std::vector<int> SQLDataBaseItem::getIDs()
 {
 	if (db == nullptr)
 	{
-		cerr << "Database closed" << endl;
+		spdlog::error("Database closed");
 		return std::vector<int>();
 	}
 	stdlock lock(mtx);
@@ -319,7 +322,7 @@ std::vector<int> SQLDataBaseItem::getIDs()
 
 	rc = sqlite3_finalize(stmt);
 	CHECK_SQL_ERROR(rc, std::vector<int>());
-	cout << "Found " << retval.size() << " Item in DB" << endl;
+	spdlog::debug("Found {} Items in DB", retval.size());
 	return retval;
 }
 std::vector<Item> SQLDataBaseItem::getAll()
@@ -333,7 +336,7 @@ std::vector<Item> SQLDataBaseItem::getAll()
 	{
 		retval.push_back(get(id));
 	}
-	cout << "Return " << retval.size() << " Item" << endl;
+	spdlog::debug("Return {} Items",retval.size());
 	return retval;
 }
 void SQLDataBaseItem::update(Item &it)
@@ -346,7 +349,7 @@ void SQLDataBaseItem::del(int id)
 {
 	if (db == nullptr)
 	{
-		cerr << "Database closed" << endl;
+		spdlog::debug("Database closed");
 		return;
 	}
 	stdlock lock(mtx);

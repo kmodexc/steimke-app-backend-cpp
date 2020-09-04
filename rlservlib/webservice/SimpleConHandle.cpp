@@ -1,5 +1,4 @@
 #include "SimpleConHandle.h"
-#include <iostream>
 
 using namespace std;
 
