@@ -12,6 +12,9 @@ struct TimeStamp{
 	TimeStamp(){year=0;month=0;day=0;hour=0;minute=0;}
 };
 
+bool operator==(const TimeStamp&,const TimeStamp&);
+bool operator!=(const TimeStamp&,const TimeStamp&);
+
 enum class ItemState{
 	created,
 	assigned,
