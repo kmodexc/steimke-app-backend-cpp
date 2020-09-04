@@ -1,5 +1,6 @@
 list(APPEND WEBSERVICE_SOURCES ConHandle.cpp)
 list(APPEND WEBSERVICE_SOURCES HTTPSocket.cpp)
+list(APPEND WEBSERVICE_SOURCES MockConHandle.cpp)
 list(APPEND WEBSERVICE_SOURCES SimpleConHandle.cpp)
 list(APPEND WEBSERVICE_SOURCES SimpleSocket.cpp)
 add_library(WebService ${WEBSERVICE_SOURCES})
