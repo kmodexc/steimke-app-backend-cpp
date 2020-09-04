@@ -25,13 +25,13 @@ void SimpleSocket::init(IConHandler *handler, int port)
 	sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (sock == -1)
 	{
-		spdlog::error("Socket creation error");
+		spdlog::get("rlservlib")->error("Socket creation error");
 		return;
 	}
 
 	if (bind(sock, (struct sockaddr *)&addr, sizeof(addr)) == -1)
 	{
-		spdlog::error("Bind error");
+		spdlog::get("rlservlib")->error("Bind error");
 		::close(sock);
 		return;
 	}
@@ -47,7 +47,7 @@ void SimpleSocket::main_thread(SimpleSocket *mthis)
 {
 	if (listen(mthis->sock, 1 /*length of connections queue*/) == -1)
 	{
-		spdlog::error("Listen error");
+		spdlog::get("rlservlib")->error("Listen error");
 		::close(mthis->sock);
 		return;
 	}
@@ -56,17 +56,17 @@ void SimpleSocket::main_thread(SimpleSocket *mthis)
 		int client_sock = accept(mthis->sock, 0, 0);
 		if (client_sock == -1)
 		{
-			spdlog::error("Accept error");
+			spdlog::get("rlservlib")->error("Accept error");
 			break;
 		}
 
-		spdlog::info("Accepted client");
+		spdlog::get("rlservlib")->info("Accepted client");
 
 		SimpleConHandle con(client_sock);
 
 		std::string str_header = con.recv();
 
-		spdlog::debug("Header: {}",str_header);
+		spdlog::get("rlservlib")->debug("Header: {}",str_header);
 
 		HTTPHeader header = decodeHeader(str_header);
 
@@ -76,7 +76,7 @@ void SimpleSocket::main_thread(SimpleSocket *mthis)
 			if (header.contentLength > 0)
 			{
 				content = con.recv(header.contentLength);
-				spdlog::debug("content: {}",content);
+				spdlog::get("rlservlib")->debug("content: {}",content);
 			}
 
 			if (mthis->handler != nullptr && header.valid)
@@ -99,7 +99,7 @@ void SimpleSocket::main_thread(SimpleSocket *mthis)
 			}
 		}else{
 			con.send("HTTP/1.1 400 Bad Header\r\n\r\n");
-			spdlog::error("invalid header");
+			spdlog::get("rlservlib")->error("invalid header");
 		}
 
 		::close(client_sock);

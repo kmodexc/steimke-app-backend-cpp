@@ -4,6 +4,7 @@
 #include <thread>
 #include <limits>
 #include "spdlog/spdlog.h"
+#include <iostream>
 
 using namespace std;
 
@@ -44,20 +45,20 @@ void HTTPSocket::init(IConHandler *handler, int port)
 
 	callbacks.begin_request = HTTPSocket::begin_request_handler;
 
-	spdlog::info("Initialized Socket on port {}",str_port);
+	spdlog::get("rlservlib")->info("Initialized Socket on port {}",str_port);
 }
 
 void HTTPSocket::run()
 {
 	if(ctx != nullptr){
-		spdlog::error("Already started a httpserver");
+		spdlog::get("rlservlib")->error("Already started a httpserver");
 		return;
 	}
 	ctx = httplib_start(&callbacks, this, options);
-	if(getchar() == 'q')
-		return;
-	while(true){
-		std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::hours(std::numeric_limits<int>::max()));
+	std::string line;
+	std::getline(std::cin,line);
+	while(line.find("quit rlserv") != 0){
+		std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::minutes(1));
 	}
 }
 
@@ -76,10 +77,10 @@ int HTTPSocket::begin_request_handler(lh_ctx_t *ctx, lh_con_t *con)
 
 	std::string req_method = request_info->request_method;
 
-	spdlog::debug("Incoming {} request",req_method);
+	spdlog::get("rlservlib")->debug("Incoming {} request",req_method);
 	for(int cnt=0;cnt < request_info->num_headers ; cnt++){
 		auto header_prop = request_info->http_headers[cnt];
-		spdlog::debug("HEADER {}   VALUE: {}",header_prop.name,header_prop.value);
+		spdlog::get("rlservlib")->debug("HEADER {}   VALUE: {}",header_prop.name,header_prop.value);
 	}		
 
 	// if path has apk in it its probably getting the file
@@ -122,16 +123,16 @@ std::string HTTPSocket::getContent(lh_ctx_t *ctx,lh_con_t* con)
 {
 	std::string content;
 	if(httplib_get_request_info(con)->content_length > 0){
-		spdlog::debug("found data with len {}",httplib_get_request_info(con)->content_length);
+		spdlog::get("rlservlib")->debug("found data with len {}",httplib_get_request_info(con)->content_length);
 		char buffer[100];
 		memset(buffer,0,sizeof(buffer));
 		while(httplib_read(ctx,con,buffer,sizeof(buffer)-2)){
 			content += buffer;
 			memset(buffer,0,sizeof(buffer));
 		}
-		spdlog::debug("content: {}",content);
+		spdlog::get("rlservlib")->debug("content: {}",content);
 	}
-	else spdlog::debug("no content");
+	else spdlog::get("rlservlib")->debug("no content");
 	return content;
 }
 

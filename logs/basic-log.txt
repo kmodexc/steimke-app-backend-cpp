@@ -1,0 +1,12 @@
+[2020-09-04 17:18:15.193] [rlservlib] [info] HeySteimke Server: /home/marius/Code/restlesserver/build/rlserv ; Version: 0.1
+[2020-09-04 17:18:15.546] [rlservlib] [info] Initialized Socket on port 30000
+[2020-09-04 17:18:15.546] [rlservlib] [info] Starting Server
+[2020-09-04 17:18:59.881] [rlservlib] [info] Server finished without exception
+[2020-09-04 17:19:24.629] [rlservlib] [info] HeySteimke Server: /home/marius/Code/restlesserver/build/rlserv ; Version: 0.1
+[2020-09-04 17:19:24.629] [rlservlib] [info] Initialized Socket on port 30000
+[2020-09-04 17:19:24.629] [rlservlib] [info] Starting Server
+[2020-09-04 17:19:29.916] [rlservlib] [info] Server finished without exception
+[2020-09-04 17:21:39.861] [rlservlib] [info] HeySteimke Server: /home/marius/Code/restlesserver/build/rlserv ; Version: 0.1
+[2020-09-04 17:21:39.861] [rlservlib] [info] Initialized Socket on port 30000
+[2020-09-04 17:21:39.861] [rlservlib] [info] Starting Server
+[2020-09-04 17:21:44.368] [rlservlib] [info] Server finished without exception

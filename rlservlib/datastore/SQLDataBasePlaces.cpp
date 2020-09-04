@@ -4,7 +4,7 @@
 #define CHECK_SQL_ERROR(returncode, errorRetVal)                                          \
 	if (returncode != SQLITE_OK && returncode != SQLITE_DONE && returncode != SQLITE_ROW) \
 	{                                                                                     \
-		spdlog::error("SQL error({}): {}",returncode,sqlite3_errmsg(db));			      \
+		spdlog::get("rlservlib")->error("SQL error({}): {}",returncode,sqlite3_errmsg(db));			      \
 		sqlite3_close(db);                                                                \
 		db = nullptr;                                                                     \
 		return errorRetVal;                                                               \
@@ -50,9 +50,9 @@ SQLDataBasePlaces::SQLDataBasePlaces()
 		{
 			if (errmsg)
 			{
-				spdlog::error("error creating table; message={}",errmsg);
+				spdlog::get("rlservlib")->error("error creating table; message={}",errmsg);
 			}else{
-				spdlog::error("error creating table; nomsg");
+				spdlog::get("rlservlib")->error("error creating table; nomsg");
 			}
 			sqlite3_close(db);
 			db = nullptr;
@@ -70,9 +70,9 @@ SQLDataBasePlaces::SQLDataBasePlaces()
 		{
 			if (errmsg)
 			{
-				spdlog::error("error creating table; message={}",errmsg);
+				spdlog::get("rlservlib")->error("error creating table; message={}",errmsg);
 			}else{
-				spdlog::error("error creating table; nomsg");
+				spdlog::get("rlservlib")->error("error creating table; nomsg");
 			}
 			sqlite3_close(db);
 			db = nullptr;
@@ -84,7 +84,7 @@ void SQLDataBasePlaces::add(Place &it)
 {
 	if (db == nullptr)
 	{
-		spdlog::error("Database closed");
+		spdlog::get("rlservlib")->error("Database closed");
 		return;
 	}
 	stdlock lock(mtx);
@@ -144,7 +144,7 @@ Place SQLDataBasePlaces::get(int id)
 {
 	if (db == nullptr)
 	{
-		spdlog::error("Database closed");
+		spdlog::get("rlservlib")->error("Database closed");
 		return Place();
 	}
 	stdlock lock(mtx);
@@ -207,7 +207,7 @@ std::vector<int> SQLDataBasePlaces::getIDs()
 {
 	if (db == nullptr)
 	{
-		spdlog::error("Database closed");
+		spdlog::get("rlservlib")->error("Database closed");
 		return std::vector<int>();
 	}
 	stdlock lock(mtx);
@@ -229,7 +229,7 @@ std::vector<int> SQLDataBasePlaces::getIDs()
 
 	rc = sqlite3_finalize(stmt);
 	CHECK_SQL_ERROR(rc, std::vector<int>());
-	spdlog::debug("Found {} Places in DB" , retval.size());
+	spdlog::get("rlservlib")->debug("Found {} Places in DB" , retval.size());
 	return retval;
 }
 std::vector<Place> SQLDataBasePlaces::getAll()
@@ -243,7 +243,7 @@ std::vector<Place> SQLDataBasePlaces::getAll()
 	{
 		retval.push_back(get(id));
 	}
-	spdlog::debug("Return {} Places",retval.size());
+	spdlog::get("rlservlib")->debug("Return {} Places",retval.size());
 	return retval;
 }
 void SQLDataBasePlaces::update(Place &it)
@@ -256,7 +256,7 @@ void SQLDataBasePlaces::del(int id)
 {
 	if (db == nullptr)
 	{
-		spdlog::error("Database closed");
+		spdlog::get("rlservlib")->error("Database closed");
 		return;
 	}
 	stdlock lock(mtx);

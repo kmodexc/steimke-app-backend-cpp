@@ -1,28 +1,53 @@
 #include "App.h"
 #include "CmakeConfig.h"
 #include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
+#include <iostream>
+#include <signal.h>
 
 using namespace std;
 using namespace rls;
 
-int main(int argc,char *argv[])
+void signal_handler(int signal){
+	std::cout << "signal " << signal << " send" << std::endl;
+	// flush buffer before end
+	if(spdlog::get("rlservlib") != nullptr){
+		spdlog::get("rlservlib")->info("signal {} send to end program",signal);
+		spdlog::get("rlservlib")->flush();
+	}
+}
+
+int main(int argc, char *argv[])
 {
+	try
+	{
+		auto logger = spdlog::basic_logger_mt("rlservlib", "logs/basic-log.txt");
+	}
+	catch (const spdlog::spdlog_ex &ex)
+	{
+		std::cerr << "Log init failed: " << ex.what() << std::endl;
+	}
+
 	// report version
-    spdlog::info("HeySteimke Server: {} ; Version: {}.{}", argv[0],RLSERV_VERSION_MAJOR,RLSERV_VERSION_MINOR);
+	spdlog::get("rlservlib")->info("HeySteimke Server: {} ; Version: {}.{}", argv[0], RLSERV_VERSION_MAJOR, RLSERV_VERSION_MINOR);
+
+	signal(SIGINT,signal_handler);
 
 	App *app = nullptr;
-	try{
+	try
+	{
 		app = new App();
-		if(app->initialize(argc,argv))
+		if (app->initialize(argc, argv))
 			app->run();
 		else
 		{
-			spdlog::error("Application didnt initialize successful");
+			spdlog::get("rlservlib")->error("Application didnt initialize successful");
 		}
-		
-	}catch(exception &exc){
-		spdlog::error("Exception in main: {}",exc.what());
 	}
-	if(app != nullptr)
+	catch (exception &exc)
+	{
+		spdlog::get("rlservlib")->error("Exception in main: {}", exc.what());
+	}
+	if (app != nullptr)
 		delete app;
 }

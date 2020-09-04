@@ -1,8 +1,6 @@
 #include "App.h"
 #include "spdlog/spdlog.h"
 
-using namespace std;
-
 namespace rls
 {
 
@@ -35,13 +33,13 @@ namespace rls
 	{
 		try
 		{
-			spdlog::info("Starting Server");
+			spdlog::get("rlservlib")->info("Starting Server");
 			soc->run();
-			spdlog::info("Server finished without exception");
+			spdlog::get("rlservlib")->info("Server finished without exception");
 		}
-		catch (exception &exc)
+		catch (std::exception &exc)
 		{
-			spdlog::error("Exception in Application trying to run soccet. Message={}",exc.what());
+			spdlog::get("rlservlib")->error("Exception in Application trying to run soccet. Message={}", exc.what());
 		}
 	}
 	void App::ok(IConHandle *soc, std::string content)
@@ -58,7 +56,7 @@ namespace rls
 
 		std::string message = ss.str();
 
-		spdlog::debug("Sending this: {}",message);
+		spdlog::get("rlservlib")->debug("Sending this: {}", message);
 
 		soc->send(message);
 	}
@@ -76,7 +74,7 @@ namespace rls
 
 		std::string message = ss.str();
 
-		spdlog::debug("Sending this: {}",message);
+		spdlog::get("rlservlib")->debug("Sending this: {}", message);
 
 		soc->send(message);
 	}
@@ -207,12 +205,14 @@ namespace rls
 				return false;
 			}
 			// check if valid item (id and name)
-			if(it.getID() > 0 || it.getName().length() <= 3){
+			if (it.getID() > 0 || it.getName().length() <= 3)
+			{
 				nok(soc, "item not valid");
 				return false;
 			}
 			// check if item already exists
-			if(dbitem->get(it.getID()).getID() > 0){
+			if (dbitem->get(it.getID()).getID() > 0)
+			{
 				nok(soc, "item already exists");
 				return false;
 			}
@@ -227,12 +227,14 @@ namespace rls
 			ser->fromJSON(content, &it);
 
 			// check if valid user (id and name)
-			if(it.getId() > 0 || it.getName().length() <= 3){
+			if (it.getId() > 0 || it.getName().length() <= 3)
+			{
 				nok(soc, "user not valid");
 				return false;
 			}
 			// check if user already exists
-			if(dbuser->get(it.getId()).getId() > 0){
+			if (dbuser->get(it.getId()).getId() > 0)
+			{
 				nok(soc, "user already exists");
 				return false;
 			}
@@ -254,12 +256,14 @@ namespace rls
 				return false;
 			}
 			// check if valid place (id and name)
-			if(it.id > 0 || it.name.length() <= 3){
+			if (it.id > 0 || it.name.length() <= 3)
+			{
 				nok(soc, "place not valid");
 				return false;
 			}
 			// check if place already exists
-			if(dbplaces->get(it.id).id > 0){
+			if (dbplaces->get(it.id).id > 0)
+			{
 				nok(soc, "place already exists");
 				return false;
 			}
