@@ -201,11 +201,21 @@ namespace rls
 			Item it;
 			ser->fromJSON(content, &it);
 
-			// check if valid
+			// check creator user exists (otherwise this might be a hacker)
 			User creator = dbuser->get(it.getCreatorID());
-			if (creator.getId() <= 0 || creator.getName().length() <= 3)
+			if (creator.getId() <= 0)
 			{
-				ok(soc, "");
+				nok(soc, "not authorized");
+				return false;
+			}
+			// check if valid item (id and name)
+			if(it.getID() > 0 || it.getName().length() <= 3){
+				nok(soc, "item not valid");
+				return false;
+			}
+			// check if item already exists
+			if(dbitem->get(it.getID()).getID() > 0){
+				nok(soc, "item already exists");
 				return false;
 			}
 
@@ -218,12 +228,15 @@ namespace rls
 			User it;
 			ser->fromJSON(content, &it);
 
-			// check if valid
-			User creator = it;
-			if (creator.getId() <= 0 || creator.getName().length() <= 3)
-			{
-				nok(soc, "not valid user");
-				return true;
+			// check if valid user (id and name)
+			if(it.getId() > 0 || it.getName().length() <= 3){
+				nok(soc, "user not valid");
+				return false;
+			}
+			// check if user already exists
+			if(dbuser->get(it.getId()).getId() > 0){
+				nok(soc, "user already exists");
+				return false;
 			}
 
 			dbuser->add(it);
@@ -235,11 +248,21 @@ namespace rls
 			Place it;
 			ser->fromJSON(content, &it);
 
-			// check if valid
+			// check creator user exists (otherwise this might be a hacker)
 			User creator = dbuser->get(it.creatorId);
-			if (creator.getId() <= 0 || creator.getName().length() <= 3)
+			if (creator.getId() <= 0)
 			{
-				ok(soc, "");
+				nok(soc, "not authorized");
+				return false;
+			}
+			// check if valid place (id and name)
+			if(it.id > 0 || it.name.length() <= 3){
+				nok(soc, "place not valid");
+				return false;
+			}
+			// check if place already exists
+			if(dbplaces->get(it.id).id > 0){
+				nok(soc, "place already exists");
 				return false;
 			}
 
