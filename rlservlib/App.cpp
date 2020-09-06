@@ -26,7 +26,11 @@ namespace rls
 		dbuser = dep.getDataBaseUser();
 		dbplaces = dep.getDataBasePlaces();
 		soc->init(this, port);
-		return true;
+		return (soc != nullptr) 
+		&& (ser != nullptr) 
+		&& (dbitem != nullptr) 
+		&& (dbuser != nullptr) 
+		&& (dbplaces!= nullptr);
 	}
 
 	void App::start()
