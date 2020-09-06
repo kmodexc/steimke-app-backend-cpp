@@ -15,6 +15,7 @@ void signal_handler(int signal){
 		spdlog::get("rlservlib")->info("signal {} send to end program",signal);
 		spdlog::get("rlservlib")->flush();
 	}
+	exit(EXIT_SUCCESS);
 }
 
 int main(int argc, char *argv[])
