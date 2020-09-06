@@ -4,3 +4,4 @@ bin/
 *.sqlite
 modules/bld/
 build/
+logs/
