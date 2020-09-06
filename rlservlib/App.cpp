@@ -222,7 +222,7 @@ namespace rls
 				return false;
 			}
 			// check if valid item (id and name)
-			if (it.getID() > 0 || it.getName().length() <= 3)
+			if (it.getID() <= 0 || it.getName().length() <= 3)
 			{
 				nok(soc, "item not valid");
 				return false;
@@ -244,7 +244,7 @@ namespace rls
 			ser->fromJSON(content, &it);
 
 			// check if valid user (id and name)
-			if (it.getId() > 0 || it.getName().length() <= 3)
+			if (it.getId() <= 0 || it.getName().length() <= 3)
 			{
 				nok(soc, "user not valid");
 				return false;
@@ -273,7 +273,7 @@ namespace rls
 				return false;
 			}
 			// check if valid place (id and name)
-			if (it.id > 0 || it.name.length() <= 3)
+			if (it.id <= 0 || it.name.length() <= 3)
 			{
 				nok(soc, "place not valid");
 				return false;
