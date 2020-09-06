@@ -1,7 +1,7 @@
 #include "App.h"
 #include "CmakeConfig.h"
 #include "spdlog/spdlog.h"
-#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/sinks/rotating_file_sink.h"
 #include <iostream>
 #include <signal.h>
 
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 {
 	try
 	{
-		auto logger = spdlog::basic_logger_mt("rlservlib", "logs/basic-log.txt");
+		auto logger = spdlog::rotating_logger_mt("rlservlib", "logs/rotating-log.txt",5000000,3);
 	}
 	catch (const spdlog::spdlog_ex &ex)
 	{
