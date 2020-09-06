@@ -29,13 +29,26 @@ namespace rls
 		return true;
 	}
 
-	void App::run()
+	void App::start()
 	{
 		try
 		{
 			spdlog::get("rlservlib")->info("Starting Server");
 			soc->run();
-			spdlog::get("rlservlib")->info("Server finished without exception");
+			spdlog::get("rlservlib")->info("Server started without exception");
+		}
+		catch (std::exception &exc)
+		{
+			spdlog::get("rlservlib")->error("Exception in Application trying to run soccet. Message={}", exc.what());
+		}
+	}
+	void App::stop()
+	{
+		try
+		{
+			spdlog::get("rlservlib")->info("Stopping Server");
+			soc->stop();
+			spdlog::get("rlservlib")->info("Server stopped without exception");
 		}
 		catch (std::exception &exc)
 		{

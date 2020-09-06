@@ -36,12 +36,18 @@ void SimpleSocket::init(IConHandler *handler, int port)
 		return;
 	}
 }
-void SimpleSocket::run()
+void SimpleSocket::start()
 {
 	run_thread = true;
 	mthread = new std::thread(main_thread, this);
 	getchar();
 	run_thread = false;
+}
+void SimpleSocket::stop()
+{
+	run_thread = false;
+	if(mthread != nullptr && mthread->joinable())
+		mthread->join();
 }
 void SimpleSocket::main_thread(SimpleSocket *mthis)
 {

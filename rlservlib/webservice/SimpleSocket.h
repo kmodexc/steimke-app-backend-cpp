@@ -38,7 +38,8 @@ protected:
 
 public:
 	void init(IConHandler *handler, int port) override;
-	void run() override;
+	void start() override;
+	void stop() override;
 	void close() override;
 	static void main_thread(SimpleSocket* msock);
 	~SimpleSocket(){};

@@ -18,7 +18,8 @@ protected:
 public:
 	App();
 	bool initialize(int argc,char *argv[]);
-	void run();
+	void start();
+	void stop();
 	bool get(IConHandle* soc,std::string path) override;
 	bool put(IConHandle* soc,std::string path,std::string content) override;
 	bool post(IConHandle* soc,std::string path,std::string content) override;
