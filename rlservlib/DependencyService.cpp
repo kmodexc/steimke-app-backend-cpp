@@ -16,6 +16,7 @@ DependencyService::DependencyService()
 	ser = nullptr;
 	dbitem = nullptr;
 	dbuser = nullptr;
+	dbplaces = nullptr;
 }
 
 DependencyService::~DependencyService()
