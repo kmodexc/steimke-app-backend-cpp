@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
 	try
 	{
 		auto logger = spdlog::rotating_logger_mt("rlservlib", "logs/rotating-log.txt", 5000000, 3);
+		logger->set_level(spdlog::level::debug);
 	}
 	catch (const spdlog::spdlog_ex &ex)
 	{
