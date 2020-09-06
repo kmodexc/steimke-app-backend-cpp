@@ -34,7 +34,7 @@ namespace rls
 		try
 		{
 			spdlog::get("rlservlib")->info("Starting Server");
-			soc->run();
+			soc->start();
 			spdlog::get("rlservlib")->info("Server started without exception");
 		}
 		catch (std::exception &exc)
