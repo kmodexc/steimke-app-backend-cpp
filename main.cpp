@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
 	spdlog::get("rlservlib")->info("HeySteimke Server: {} ; Version: {}.{}", argv[0], RLSERV_VERSION_MAJOR, RLSERV_VERSION_MINOR);
 
 	signal(SIGINT,signal_handler);
+	signal(SIGTERM,signal_handler);
 
 	App *app = nullptr;
 	try
