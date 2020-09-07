@@ -8,7 +8,8 @@ enum class UserState
 {
 	admin,
 	user,
-	guest
+	guest,
+	mod
 };
 
 std::string toString(const UserState &state);
