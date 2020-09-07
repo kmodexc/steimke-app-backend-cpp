@@ -21,9 +21,9 @@ TEST(UserTest,UserTest1){
 	contentstr = jsonconv->toJSON(rls::User(23,"testuser","pw","em",rls::UserState::user,0));
 
 	EXPECT_TRUE(app.post(&con,"/api/user",contentstr));
-	EXPECT_EQ(con.send_content,"ok user add");
+	EXPECT_EQ(con.send_content,"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 12\r\n\r\npost user ok");
 	con.send_content.clear();
-	EXPECT_TRUE(app.del(&con,"/api/user"));
-	EXPECT_EQ(con.send_content,"ok user delete");
+	EXPECT_TRUE(app.del(&con,"/api/user/23"));
+	EXPECT_EQ(con.send_content,"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 11\r\n\r\ndel user ok");
 	con.send_content.clear();
 }
