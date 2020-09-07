@@ -2,11 +2,19 @@
 #include "App.h"
 #include "MockConHandle.h"
 #include "gtest/gtest.h"
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
 
 using namespace rls;
 
 TEST(TestItemAll, ItemTest1)
 {
+	try{
+			spdlog::basic_logger_mt("rlservlib","logs/basic-file.log");
+	}catch(spdlog::spdlog_ex){
+
+	}
+
 	TimeStamp created, assigned, finished;
 	created.year = 11;
 	created.month = 12;
@@ -46,17 +54,27 @@ TEST(TestItemAll, ItemTest1)
 	MockConHandle con;
 
 	EXPECT_TRUE(app.post(&con,"/api/item",contentstr));
+	EXPECT_EQ(con.send_content,"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 12\r\n\r\npost item ok");
 	con.send_content.clear();
 	EXPECT_TRUE(app.get(&con,"/api/item/234"));
-	//EXPECT_EQ(con.send_content,contentstr);
-
+	EXPECT_EQ(con.send_content,std::string("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 352\r\n\r\n")+contentstr);
+	con.send_content.clear();
 	// cleanup
 	EXPECT_TRUE(app.del(&con,"/api/item/234"));
+	EXPECT_EQ(con.send_content,"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 11\r\n\r\ndel item ok");
+	con.send_content.clear();
 	EXPECT_TRUE(app.del(&con,"/api/user/1"));
+	EXPECT_EQ(con.send_content,"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 11\r\n\r\ndel user ok");
 }
 
 TEST(TestItemDB, ItemAddGet)
 {
+	try{
+			spdlog::basic_logger_mt("rlservlib","logs/basic-file.log");
+	}catch(spdlog::spdlog_ex){
+
+	}
+
 	DependencyService depend;
 	auto db = depend.getDataBaseItem();
 	TimeStamp created, assigned, finished;

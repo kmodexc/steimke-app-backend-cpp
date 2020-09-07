@@ -6,7 +6,11 @@
 #include "spdlog/sinks/basic_file_sink.h"
 
 TEST(UserTest,UserTest1){
-	spdlog::basic_logger_mt("rlservlib","logs/basic-file.log");
+	try{
+			spdlog::basic_logger_mt("rlservlib","logs/basic-file.log");
+	}catch(spdlog::spdlog_ex){
+
+	}
 	SPDLOG_DEBUG("");
 	rls::App app;
 	char portstr[] = "9999";
