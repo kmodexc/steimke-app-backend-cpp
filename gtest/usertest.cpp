@@ -2,9 +2,16 @@
 #include "App.h"
 #include "MockConHandle.h"
 #include "DependencyService.h"
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
 
 TEST(UserTest,UserTest1){
+	spdlog::basic_logger_mt("rlservlib","logs/basic-file.log");
+	SPDLOG_DEBUG("");
 	rls::App app;
+	char portstr[] = "9999";
+	char *arr[] = {nullptr, portstr};
+	EXPECT_TRUE(app.initialize(2, arr));
 	rls::MockConHandle con;
 
 	// create string rep of item
