@@ -204,7 +204,7 @@ void SQLDataBaseItem::add(Item &it)
 	rc = sqlite3_finalize(stmt);
 	CHECK_SQL_ERROR(rc, );
 }
-Item SQLDataBaseItem::get(int id)
+Item SQLDataBaseItem::get(int ex_id)
 {
 	if (db == nullptr)
 	{
@@ -218,7 +218,7 @@ Item SQLDataBaseItem::get(int id)
 	int rc = sqlite3_prepare_v2(db, command, sizeof(command), &stmt, nullptr);
 	CHECK_SQL_ERROR(rc, Item());
 
-	rc = sqlite3_bind_int(stmt, 1, id);
+	rc = sqlite3_bind_int(stmt, 1, ex_id);
 	CHECK_SQL_ERROR(rc, Item());
 
 	rc = sqlite3_step(stmt);
@@ -226,7 +226,7 @@ Item SQLDataBaseItem::get(int id)
 
 	// colum starts at 0
 
-	// int id = sqlite3_column_int(stmt, 0);
+	int id = sqlite3_column_int(stmt, 0);
 	ItemState state = (ItemState)sqlite3_column_int(stmt, 1);
 	std::string name = TO_CPP_STRING(sqlite3_column_text(stmt, 2));
 	std::string shortdesc = TO_CPP_STRING(sqlite3_column_text(stmt, 3));
