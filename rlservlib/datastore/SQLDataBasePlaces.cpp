@@ -140,7 +140,7 @@ void SQLDataBasePlaces::add(Place &it)
 		}
 	}
 }
-Place SQLDataBasePlaces::get(int id)
+Place SQLDataBasePlaces::get(int ex_id)
 {
 	if (db == nullptr)
 	{
@@ -154,12 +154,14 @@ Place SQLDataBasePlaces::get(int id)
 	int rc = sqlite3_prepare_v2(db, command, sizeof(command), &stmt, nullptr);
 	CHECK_SQL_ERROR(rc, Place());
 
-	rc = sqlite3_bind_int(stmt, 1, id);
+	rc = sqlite3_bind_int(stmt, 1, ex_id);
 	CHECK_SQL_ERROR(rc, Place());
 
 	rc = sqlite3_step(stmt);
 	CHECK_SQL_ERROR(rc, Place());
 
+	// read actively from db to make shure there is really a valid item
+	int id = sqlite3_column_int(stmt, 0);
 	PlaceType state = (PlaceType)sqlite3_column_int(stmt, 1);
 	std::string name = TO_CPP_STRING(sqlite3_column_text(stmt, 2));
 	int creatorId = sqlite3_column_int(stmt, 3);
