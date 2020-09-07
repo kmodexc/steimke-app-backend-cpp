@@ -110,3 +110,75 @@ TEST(TestItemDB, ItemAddGet)
 	EXPECT_EQ(it.getFinishedTime(), it2.getFinishedTime());
 	EXPECT_EQ(it.getState(), it2.getState());
 }
+
+TEST(TestItemDB,ItemUpdate){
+	try{
+			spdlog::basic_logger_mt("rlservlib","logs/basic-file.log");
+	}catch(spdlog::spdlog_ex){
+
+	}
+
+
+	TimeStamp created, assigned, finished;
+	created.year = 11;
+	created.month = 12;
+	created.day = 13;
+	created.hour = 14;
+	created.day = 15;
+	assigned.year = 21;
+	assigned.month = 22;
+	assigned.day = 23;
+	assigned.hour = 24;
+	assigned.day = 25;
+	finished.year = 31;
+	finished.month = 32;
+	finished.day = 33;
+	finished.hour = 34;
+	finished.day = 35;
+	int creatorID = 1;
+	Item it(234, ItemState::inprogress, "test", "shortdesc", "desc", 2, creatorID, 3, 4, 5, created, assigned, finished);
+
+	// create string rep of item
+	std::string contentstr = "";
+	DependencyService dep;
+	auto jsonconv = dep.getJSONSerializer();
+	contentstr = jsonconv->toJSON(it);
+
+	// add user to add this to make it valid
+	auto userdb = dep.getDataBaseUser();
+	User admin(1,"admin","pw","em",UserState::admin,0);
+	userdb->add(admin);
+
+
+	rls::App app;
+	char portstr[] = "9999";
+	char *arr[] = {nullptr, portstr};
+	app.initialize(2, arr);
+
+	MockConHandle con;
+
+	EXPECT_TRUE(app.post(&con,"/api/item",contentstr));
+	EXPECT_EQ(con.send_content,"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 12\r\n\r\npost item ok");
+	con.send_content.clear();
+	EXPECT_TRUE(app.get(&con,"/api/item/234"));
+	EXPECT_EQ(con.send_content,std::string("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 352\r\n\r\n")+contentstr);
+	con.send_content.clear();
+
+
+	Item it2(234, ItemState::finished, "test2", "shortdesc2", "desc2", 2, creatorID, 3, 4, 5, created, assigned, finished);
+	contentstr = jsonconv->toJSON(it2);
+	EXPECT_TRUE(app.put(&con,"/api/item/234",contentstr));
+	EXPECT_EQ(con.send_content,"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 11\r\n\r\nput item ok");
+	con.send_content.clear();
+	EXPECT_TRUE(app.get(&con,"/api/item/234"));
+	EXPECT_EQ(con.send_content,std::string("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 353\r\n\r\n")+contentstr);
+	con.send_content.clear();
+
+	// cleanup
+	EXPECT_TRUE(app.del(&con,"/api/item/234"));
+	EXPECT_EQ(con.send_content,"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 11\r\n\r\ndel item ok");
+	con.send_content.clear();
+	EXPECT_TRUE(app.del(&con,"/api/user/1"));
+	EXPECT_EQ(con.send_content,"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 11\r\n\r\ndel user ok");
+
+}
