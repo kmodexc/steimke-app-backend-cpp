@@ -26,3 +26,5 @@ target_link_libraries(rlserv PUBLIC rlservlib spdlog)
 install(TARGETS rlserv DESTINATION bin)
 install(FILES "${PROJECT_BINARY_DIR}/CmakeConfig.h" DESTINATION include)
 
+add_test(NAME TEST_ALL COMMAND gtest/gtest_all)
+
