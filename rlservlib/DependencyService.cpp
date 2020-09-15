@@ -1,5 +1,4 @@
 #include "DependencyService.h"
-#include "HTTPSocket.h"
 #include "JSONSerializer.h"
 #include "MockDataStore.h"
 #include "SQLDataBaseItem.h"
