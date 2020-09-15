@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10.0)
-project(rlserv VERSION 0.1.0)
+project(rlserv VERSION 0.1.1)
 
 # configure a header file to pass some of the CMake settings
 # to the source code
