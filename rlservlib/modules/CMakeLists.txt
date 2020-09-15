@@ -1,3 +1,7 @@
 add_subdirectory(sqlite_amalg)
 add_subdirectory(json2)
 add_subdirectory(spdlog)
+#set(HTTPLIB_COMPILE ON)
+#set(BUILD_SHARED_LIBS ON)
+#set(HTTPLIB_REQUIRE_OPENSSL ON)
+#add_subdirectory(cpp-httplib)

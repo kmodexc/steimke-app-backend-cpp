@@ -6,6 +6,7 @@
 #include "SQLDataBaseUser.h"
 #include "SQLDataBasePlaces.h"
 #include "SimpleSocket.h"
+#include "SocketYhirose.h"
 
 namespace rls
 {
@@ -40,7 +41,7 @@ void DependencyService::dispose()
 IHTTPSocket *DependencyService::getHttpSocket()
 {
 	if (soc == nullptr)
-		soc = new HTTPSocket();
+		soc = new SocketYhirose();
 	return soc;
 }
 
