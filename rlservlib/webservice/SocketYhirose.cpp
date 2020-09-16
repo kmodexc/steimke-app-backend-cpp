@@ -12,7 +12,8 @@ namespace rls
 
 		if (handler != nullptr)
 		{
-			pserv->Get("/api", [handler](const httplib::Request &req, httplib::Response &res) {
+			const char* regexstr = R"((/api/)((item/\d+)|(place/\d+)|(user/\d+)|(items)|(places)|(users)|(ping)))";
+			pserv->Get(regexstr, [handler](const httplib::Request &req, httplib::Response &res) {
 				MockConHandle conhandle;
 				if (handler->get(&conhandle, req.path))
 				{
@@ -23,7 +24,7 @@ namespace rls
 					res.set_content("Hello World!", "text/plain");
 				}
 			});
-			pserv->Put("/api", [handler](const httplib::Request &req, httplib::Response &res) {
+			pserv->Put(regexstr, [handler](const httplib::Request &req, httplib::Response &res) {
 				MockConHandle conhandle;
 				if (handler->put(&conhandle, req.path, req.body))
 				{
@@ -34,7 +35,7 @@ namespace rls
 					res.set_content("Hello World!", "text/plain");
 				}
 			});
-			pserv->Post("/api", [handler](const httplib::Request &req, httplib::Response &res) {
+			pserv->Post(regexstr, [handler](const httplib::Request &req, httplib::Response &res) {
 				MockConHandle conhandle;
 				if (handler->post(&conhandle, req.path, req.body))
 				{
@@ -45,7 +46,7 @@ namespace rls
 					res.set_content("Hello World!", "text/plain");
 				}
 			});
-			pserv->Delete("/api", [handler](const httplib::Request &req, httplib::Response &res) {
+			pserv->Delete(regexstr, [handler](const httplib::Request &req, httplib::Response &res) {
 				MockConHandle conhandle;
 				if (handler->del(&conhandle, req.path))
 				{
