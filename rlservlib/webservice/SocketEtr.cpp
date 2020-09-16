@@ -1,14 +1,66 @@
 #include "SocketEtr.h"
+#include "MockConHandle.h"
 #include "httpserver.hpp"
+#include "spdlog/spdlog.h"
+#include <thread>
 
 namespace rls
 {
-	class hello_world_resource : public httpserver::http_resource
+
+	void custom_access_log(const std::string &url)
 	{
+		//std::cout << "ACCESSING: " << url << std::endl;
+		spdlog::get("rlservlib")->debug("ACCESSING {}", url);
+	}
+
+	class http_resource : public httpserver::http_resource
+	{
+		IConHandler *handler;
+
 	public:
-		const std::shared_ptr<httpserver::http_response> render(const httpserver::http_request &)
+		http_resource(IConHandler *handler)
 		{
-			return std::shared_ptr<httpserver::http_response>(new httpserver::string_response("Hello, World!"));
+			this->handler = handler;
+		}
+		const std::shared_ptr<httpserver::http_response> render(const httpserver::http_request &req)
+		{
+			spdlog::get("rlservlib")->info("incoming {} request", req.get_method());
+			spdlog::get("rlservlib")->info("user '{}' pw '{}'", req.get_user(),req.get_pass());
+			spdlog::get("rlservlib")->info("content {}", req.get_content());
+
+			if (req.get_user() != "myuser" || req.get_pass() != "mypass")
+			{
+				return std::shared_ptr<httpserver::basic_auth_fail_response>(new httpserver::basic_auth_fail_response("FAIL", ""));
+			}
+
+			MockConHandle handle;
+			bool captured = false;
+			if (req.get_method() == "GET")
+			{
+				captured = handler->get(&handle, req.get_path());
+			}
+			else if (req.get_method() == "POST")
+			{
+				captured = handler->post(&handle, req.get_path(), req.get_content());
+			}
+			else if (req.get_method() == "PUT")
+			{
+				captured = handler->put(&handle, req.get_path(), req.get_content());
+			}
+			else if (req.get_method() == "DELETE")
+			{
+				captured = handler->del(&handle, req.get_path());
+			}
+			else
+			{
+				spdlog::get("rlservlib")->error("unknown method {}", req.get_method());
+			}
+			std::string header = handle.send_content.substr(0, handle.send_content.find("\r\n\r\n"));
+			bool ok = header.find("200") != std::string::npos;
+			int respcode = (ok ? 200 : 500);
+			std::string content = handle.send_content.substr(handle.send_content.find("\r\n\r\n") + 4);
+			auto presp = std::shared_ptr<httpserver::http_response>(new httpserver::string_response(content, respcode, "application/json"));
+			return presp;
 		}
 	};
 
@@ -19,30 +71,44 @@ namespace rls
 	}
 	void SocketEtr::start()
 	{
-		if(this->pws != nullptr) return;
+		if (this->pws != nullptr)
+			return;
 
-		httpserver::webserver ws = httpserver::create_webserver(this->port);
+		std::thread *pth = new std::thread([this]() {
+			httpserver::webserver ws = httpserver::create_webserver(this->port)
+										   .use_ssl()
+										   .https_mem_key("../key.pem")
+										   .https_mem_cert("../cert.pem");
 
-    	hello_world_resource *hwr = new hello_world_resource();
-    	ws.register_resource("/api/ping", hwr);
-		// ws.register_resource("/api/items", hwr);
-		// ws.register_resource("/api/places", hwr);
-		// ws.register_resource("/api/users", hwr);
-		// ws.register_resource("/api/item/{argid}", hwr);
-		// ws.register_resource("/api/place/{argid}", hwr);
-		// ws.register_resource("/api/user/{argid}", hwr);
-    	ws.start(false);
+			http_resource hwr((IConHandler *)this->handler);
+			ws.register_resource("/api/ping", &hwr);
+			ws.register_resource("/api/items", &hwr);
+			ws.register_resource("/api/places", &hwr);
+			ws.register_resource("/api/users", &hwr);
+			ws.register_resource("/api/item", &hwr);
+			ws.register_resource("/api/place", &hwr);
+			ws.register_resource("/api/user", &hwr);
+			ws.register_resource("/api/item/{arg1}", &hwr);
+			ws.register_resource("/api/place/{arg1}", &hwr);
+			ws.register_resource("/api/user/{arg1}", &hwr);
 
-		this->pws = &ws;
+			spdlog::get("rlservlib")->info("Starting eltr on Port {}", this->port);
+
+			this->pws = &ws;
+
+			ws.start(true);
+
+			spdlog::get("rlservlib")->info("Server thread returning");
+		});
 	}
 	void SocketEtr::stop()
 	{
-		if(this->pws != nullptr){
-			httpserver::webserver* mws = (httpserver::webserver*)pws;
+		if (this->pws != nullptr)
+		{
+			httpserver::webserver *mws = (httpserver::webserver *)pws;
 
-			mws->stop();
+			mws->sweet_kill();
 
-			delete mws;
 			this->pws = nullptr;
 		}
 	}
