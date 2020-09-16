@@ -13,3 +13,6 @@
 [submodule "rlservlib/modules/libhttp"]
 	path = rlservlib/modules/libhttp
 	url = https://github.com/lammertb/libhttp.git
+[submodule "rlservlib/modules/libhttpserver"]
+	path = rlservlib/modules/libhttpserver
+	url = https://github.com/etr/libhttpserver.git

@@ -12,7 +12,10 @@ enable_testing()
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH 
+	${CMAKE_MODULE_PATH} 
+	"${CMAKE_CURRENT_SOURCE_DIR}/cmake" 
+	"${CMAKE_CURRENT_SOURCE_DIR}/rlservlib/modules/libhttpserver/cmakemodule")
 include(CPack)
 
 add_subdirectory(rlservlib)
