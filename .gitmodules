@@ -10,3 +10,6 @@
 [submodule "rlservlib/modules/cpp-httplib"]
 	path = rlservlib/modules/cpp-httplib
 	url = https://github.com/yhirose/cpp-httplib.git
+[submodule "rlservlib/modules/libhttp"]
+	path = rlservlib/modules/libhttp
+	url = https://github.com/lammertb/libhttp.git
