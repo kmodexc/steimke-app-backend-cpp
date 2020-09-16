@@ -12,7 +12,8 @@ namespace rls
 
 		if (handler != nullptr)
 		{
-			const char *regexstr = R"((/api/)((item\d+)|(place\d+)|(user\d+)|(items)|(places)|(users)|(ping)))";
+			//const char *regexstr = R"((/api/)((item/\d+)|(place/\d+)|(user/\d+)|(items)|(places)|(users)|(ping)))";
+			const char *regexstr = R"((/api/)(\S+))";
 			pserv->Get(regexstr, [handler](const httplib::Request &req, httplib::Response &res) {
 				MockConHandle conhandle;
 				if (handler->get(&conhandle, req.path))
@@ -20,7 +21,7 @@ namespace rls
 					auto splitpos = conhandle.send_content.find("\r\n\r\n");
 					if (splitpos > 0 && splitpos < 100)
 					{
-						conhandle.send_content = conhandle.send_content.substr(splitpos+4);
+						conhandle.send_content = conhandle.send_content.substr(splitpos + 4);
 					}
 					res.set_content(conhandle.send_content, "application/json");
 				}
@@ -36,7 +37,7 @@ namespace rls
 					auto splitpos = conhandle.send_content.find("\r\n\r\n");
 					if (splitpos > 0 && splitpos < 100)
 					{
-						conhandle.send_content = conhandle.send_content.substr(splitpos+4);
+						conhandle.send_content = conhandle.send_content.substr(splitpos + 4);
 					}
 					res.set_content(conhandle.send_content, "application/json");
 				}
@@ -52,7 +53,7 @@ namespace rls
 					auto splitpos = conhandle.send_content.find("\r\n\r\n");
 					if (splitpos > 0 && splitpos < 100)
 					{
-						conhandle.send_content = conhandle.send_content.substr(splitpos+4);
+						conhandle.send_content = conhandle.send_content.substr(splitpos + 4);
 					}
 					res.set_content(conhandle.send_content, "application/json");
 				}
@@ -68,7 +69,7 @@ namespace rls
 					auto splitpos = conhandle.send_content.find("\r\n\r\n");
 					if (splitpos > 0 && splitpos < 100)
 					{
-						conhandle.send_content = conhandle.send_content.substr(splitpos+4);
+						conhandle.send_content = conhandle.send_content.substr(splitpos + 4);
 					}
 					res.set_content(conhandle.send_content, "application/json");
 				}
