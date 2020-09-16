@@ -12,11 +12,16 @@ namespace rls
 
 		if (handler != nullptr)
 		{
-			const char* regexstr = R"((/api/)((item/\d+)|(place/\d+)|(user/\d+)|(items)|(places)|(users)|(ping)))";
+			const char *regexstr = R"((/api/)((item/\d+)|(place/\d+)|(user/\d+)|(items)|(places)|(users)|(ping)))";
 			pserv->Get(regexstr, [handler](const httplib::Request &req, httplib::Response &res) {
 				MockConHandle conhandle;
 				if (handler->get(&conhandle, req.path))
 				{
+					auto splitpos = conhandle.send_content.find("\r\n\r\n");
+					if (splitpos > 0 && splitpos < 100)
+					{
+						conhandle.send_content = conhandle.send_content.substr(splitpos+4);
+					}
 					res.set_content(conhandle.send_content, "application/json");
 				}
 				else
@@ -28,6 +33,11 @@ namespace rls
 				MockConHandle conhandle;
 				if (handler->put(&conhandle, req.path, req.body))
 				{
+					auto splitpos = conhandle.send_content.find("\r\n\r\n");
+					if (splitpos > 0 && splitpos < 100)
+					{
+						conhandle.send_content = conhandle.send_content.substr(splitpos+4);
+					}
 					res.set_content(conhandle.send_content, "application/json");
 				}
 				else
@@ -39,6 +49,11 @@ namespace rls
 				MockConHandle conhandle;
 				if (handler->post(&conhandle, req.path, req.body))
 				{
+					auto splitpos = conhandle.send_content.find("\r\n\r\n");
+					if (splitpos > 0 && splitpos < 100)
+					{
+						conhandle.send_content = conhandle.send_content.substr(splitpos+4);
+					}
 					res.set_content(conhandle.send_content, "application/json");
 				}
 				else
@@ -50,6 +65,11 @@ namespace rls
 				MockConHandle conhandle;
 				if (handler->del(&conhandle, req.path))
 				{
+					auto splitpos = conhandle.send_content.find("\r\n\r\n");
+					if (splitpos > 0 && splitpos < 100)
+					{
+						conhandle.send_content = conhandle.send_content.substr(splitpos+4);
+					}
 					res.set_content(conhandle.send_content, "application/json");
 				}
 				else
@@ -70,7 +90,7 @@ namespace rls
 			auto th = new std::thread([this]() {
 				httplib::Server *pserv = (httplib::Server *)this->svr;
 				int p2 = this->port;
-				spdlog::get("rlservlib")->debug("start yhirose on port {}",p2);
+				spdlog::get("rlservlib")->debug("start yhirose on port {}", p2);
 				pserv->listen("0.0.0.0", p2);
 				std::this_thread::sleep_for(std::chrono::minutes(1));
 			});
