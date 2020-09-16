@@ -12,7 +12,7 @@ namespace rls
 
 		if (handler != nullptr)
 		{
-			const char *regexstr = R"((/api/)((item/\d+)|(place/\d+)|(user/\d+)|(items)|(places)|(users)|(ping)))";
+			const char *regexstr = R"((/api/)((item\d+)|(place\d+)|(user\d+)|(items)|(places)|(users)|(ping)))";
 			pserv->Get(regexstr, [handler](const httplib::Request &req, httplib::Response &res) {
 				MockConHandle conhandle;
 				if (handler->get(&conhandle, req.path))
