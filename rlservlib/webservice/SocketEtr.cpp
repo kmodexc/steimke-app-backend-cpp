@@ -76,21 +76,14 @@ namespace rls
 
 		std::thread *pth = new std::thread([this]() {
 			httpserver::webserver ws = httpserver::create_webserver(this->port)
-										   .use_ssl()
-										   .https_mem_key("../key.pem")
-										   .https_mem_cert("../cert.pem");
+											.single_resource()
+											.max_threads(8)
+											.use_ssl()
+											.https_mem_key("../key.pem")
+											.https_mem_cert("../cert.pem");
 
 			http_resource hwr((IConHandler *)this->handler);
-			ws.register_resource("/api/ping", &hwr);
-			ws.register_resource("/api/items", &hwr);
-			ws.register_resource("/api/places", &hwr);
-			ws.register_resource("/api/users", &hwr);
-			ws.register_resource("/api/item", &hwr);
-			ws.register_resource("/api/place", &hwr);
-			ws.register_resource("/api/user", &hwr);
-			ws.register_resource("/api/item/{arg1}", &hwr);
-			ws.register_resource("/api/place/{arg1}", &hwr);
-			ws.register_resource("/api/user/{arg1}", &hwr);
+			ws.register_resource("/",&hwr,true);
 
 			spdlog::get("rlservlib")->info("Starting eltr on Port {}", this->port);
 
