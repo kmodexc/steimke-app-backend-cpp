@@ -41,7 +41,7 @@ void DependencyService::dispose()
 IHTTPSocket *DependencyService::getHttpSocket()
 {
 	if (soc == nullptr)
-		soc = new SocketYhirose();
+		soc = new SocketEtr();
 	return soc;
 }
 
