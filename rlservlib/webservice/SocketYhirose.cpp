@@ -9,73 +9,148 @@ namespace rls
 	void SocketYhirose::init(IConHandler *handler, int port)
 	{
 		httplib::SSLServer *pserv = new httplib::SSLServer("../cert.pem", "../key.pem");
-
 		if (handler != nullptr)
 		{
 			//const char *regexstr = R"((/api/)((item/\d+)|(place/\d+)|(user/\d+)|(items)|(places)|(users)|(ping)))";
 			const char *regexstr = R"((/api/)(\S+))";
 			pserv->Get(regexstr, [handler](const httplib::Request &req, httplib::Response &res) {
-				MockConHandle conhandle;
-				if (handler->get(&conhandle, req.path))
+				if (req.has_header("Authorization"))
 				{
-					auto splitpos = conhandle.send_content.find("\r\n\r\n");
-					if (splitpos > 0 && splitpos < 100)
+					if (req.get_header_value("Authorization") == "Basic bXl1c2VyOm15cGFzcw==")
 					{
-						conhandle.send_content = conhandle.send_content.substr(splitpos + 4);
+						spdlog::get("rlservlib")->debug("authentication {}", req.get_header_value("Authorization"));
+						MockConHandle conhandle;
+						if (handler->get(&conhandle, req.path))
+						{
+							auto splitpos = conhandle.send_content.find("\r\n\r\n");
+							if (splitpos > 0 && splitpos < 100)
+							{
+								conhandle.send_content = conhandle.send_content.substr(splitpos + 4);
+							}
+							res.set_content(conhandle.send_content, "application/json");
+						}
+						else
+						{
+							res.set_content("Hello World!", "text/plain");
+						}
 					}
-					res.set_content(conhandle.send_content, "application/json");
+					else
+					{
+						res.status = 401;
+						res.set_header("WWW-Authenticate", "Basic realm=\"User Visible Realm\"");
+						res.set_content("FAIL", "text/plain");
+					}
 				}
 				else
 				{
-					res.set_content("Hello World!", "text/plain");
+					res.status = 401;
+					res.set_header("WWW-Authenticate", "Basic realm=\"User Visible Realm\"");
+					res.set_content("FAIL", "text/plain");
 				}
 			});
 			pserv->Put(regexstr, [handler](const httplib::Request &req, httplib::Response &res) {
-				MockConHandle conhandle;
-				if (handler->put(&conhandle, req.path, req.body))
+				if (req.has_header("Authorization"))
 				{
-					auto splitpos = conhandle.send_content.find("\r\n\r\n");
-					if (splitpos > 0 && splitpos < 100)
+					if (req.get_header_value("Authorization") == "Basic bXl1c2VyOm15cGFzcw==")
 					{
-						conhandle.send_content = conhandle.send_content.substr(splitpos + 4);
+						spdlog::get("rlservlib")->debug("authentication {}", req.get_header_value("Authorization"));
+						MockConHandle conhandle;
+						if (handler->put(&conhandle, req.path,req.body))
+						{
+							auto splitpos = conhandle.send_content.find("\r\n\r\n");
+							if (splitpos > 0 && splitpos < 100)
+							{
+								conhandle.send_content = conhandle.send_content.substr(splitpos + 4);
+							}
+							res.set_content(conhandle.send_content, "application/json");
+						}
+						else
+						{
+							res.set_content("Hello World!", "text/plain");
+						}
 					}
-					res.set_content(conhandle.send_content, "application/json");
+					else
+					{
+						res.status = 401;
+						res.set_header("WWW-Authenticate", "Basic realm=\"User Visible Realm\"");
+						res.set_content("FAIL", "text/plain");
+					}
 				}
 				else
 				{
-					res.set_content("Hello World!", "text/plain");
+					res.status = 401;
+					res.set_header("WWW-Authenticate", "Basic realm=\"User Visible Realm\"");
+					res.set_content("FAIL", "text/plain");
 				}
 			});
 			pserv->Post(regexstr, [handler](const httplib::Request &req, httplib::Response &res) {
-				MockConHandle conhandle;
-				if (handler->post(&conhandle, req.path, req.body))
+				if (req.has_header("Authorization"))
 				{
-					auto splitpos = conhandle.send_content.find("\r\n\r\n");
-					if (splitpos > 0 && splitpos < 100)
+					if (req.get_header_value("Authorization") == "Basic bXl1c2VyOm15cGFzcw==")
 					{
-						conhandle.send_content = conhandle.send_content.substr(splitpos + 4);
+						spdlog::get("rlservlib")->debug("authentication {}", req.get_header_value("Authorization"));
+						MockConHandle conhandle;
+						if (handler->post(&conhandle, req.path,req.body))
+						{
+							auto splitpos = conhandle.send_content.find("\r\n\r\n");
+							if (splitpos > 0 && splitpos < 100)
+							{
+								conhandle.send_content = conhandle.send_content.substr(splitpos + 4);
+							}
+							res.set_content(conhandle.send_content, "application/json");
+						}
+						else
+						{
+							res.set_content("Hello World!", "text/plain");
+						}
 					}
-					res.set_content(conhandle.send_content, "application/json");
+					else
+					{
+						res.status = 401;
+						res.set_header("WWW-Authenticate", "Basic realm=\"User Visible Realm\"");
+						res.set_content("FAIL", "text/plain");
+					}
 				}
 				else
 				{
-					res.set_content("Hello World!", "text/plain");
+					res.status = 401;
+					res.set_header("WWW-Authenticate", "Basic realm=\"User Visible Realm\"");
+					res.set_content("FAIL", "text/plain");
 				}
 			});
 			pserv->Delete(regexstr, [handler](const httplib::Request &req, httplib::Response &res) {
-				MockConHandle conhandle;
-				if (handler->del(&conhandle, req.path))
+				if (req.has_header("Authorization"))
 				{
-					auto splitpos = conhandle.send_content.find("\r\n\r\n");
-					if (splitpos > 0 && splitpos < 100)
+					if (req.get_header_value("Authorization") == "Basic bXl1c2VyOm15cGFzcw==")
 					{
-						conhandle.send_content = conhandle.send_content.substr(splitpos + 4);
+						spdlog::get("rlservlib")->debug("authentication {}", req.get_header_value("Authorization"));
+						MockConHandle conhandle;
+						if (handler->del(&conhandle, req.path))
+						{
+							auto splitpos = conhandle.send_content.find("\r\n\r\n");
+							if (splitpos > 0 && splitpos < 100)
+							{
+								conhandle.send_content = conhandle.send_content.substr(splitpos + 4);
+							}
+							res.set_content(conhandle.send_content, "application/json");
+						}
+						else
+						{
+							res.set_content("Hello World!", "text/plain");
+						}
 					}
-					res.set_content(conhandle.send_content, "application/json");
+					else
+					{
+						res.status = 401;
+						res.set_header("WWW-Authenticate", "Basic realm=\"User Visible Realm\"");
+						res.set_content("FAIL", "text/plain");
+					}
 				}
 				else
 				{
-					res.set_content("Hello World!", "text/plain");
+					res.status = 401;
+					res.set_header("WWW-Authenticate", "Basic realm=\"User Visible Realm\"");
+					res.set_content("FAIL", "text/plain");
 				}
 			});
 		}
