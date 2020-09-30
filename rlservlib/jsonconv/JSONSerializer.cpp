@@ -5,7 +5,7 @@ namespace rls
 
 	using json = nlohmann::json;
 
-	std::string JSONSerializer::toJSON(const Item &item)
+	json toJSON_int(const Item &item)
 	{
 		json j;
 		j["id"] = item.getID();
@@ -19,11 +19,15 @@ namespace rls
 		j["workload"] = item.getWorkload();
 		j["placeid"] = item.getPlaceID();
 
-		addToJSON(j, item.getCreateTime(), "createtime");
-		addToJSON(j, item.getAssignedTime(), "assignedtime");
-		addToJSON(j, item.getFinishedTime(), "finishedtime");
+		JSONSerializer::addToJSON(j, item.getCreateTime(), "createtime");
+		JSONSerializer::addToJSON(j, item.getAssignedTime(), "assignedtime");
+		JSONSerializer::addToJSON(j, item.getFinishedTime(), "finishedtime");
 
-		return j.dump();
+		return j;
+	}
+	std::string JSONSerializer::toJSON(const Item &item)
+	{
+		return toJSON_int(item).dump();
 	}
 	void JSONSerializer::fromJSON(const std::string &str, Item *itout)
 	{
@@ -108,8 +112,7 @@ namespace rls
 			t.minute = j[prefix.c_str()]["minute"].get<int>();
 		*time = t;
 	}
-
-	std::string JSONSerializer::toJSON(const User &usr)
+	json toJSON_int(const User &usr)
 	{
 		json j;
 		j["id"] = usr.getId();
@@ -118,7 +121,11 @@ namespace rls
 		j["pw"] = usr.getPassword();
 		j["email"] = usr.getEmail();
 		j["workload"] = usr.getWorkload();
-		return j.dump();
+		return j;
+	}
+	std::string JSONSerializer::toJSON(const User &usr)
+	{
+		return toJSON_int(usr).dump();
 	}
 	void JSONSerializer::fromJSON(const std::string &str, User *usr)
 	{
@@ -148,7 +155,7 @@ namespace rls
 		User mu(id, name, pw, email, state, wl);
 		*usr = mu;
 	}
-	std::string JSONSerializer::toJSON(const Place &p)
+	json toJSON_int(const Place &p)
 	{
 		json j;
 		j["id"] = p.id;
@@ -156,7 +163,11 @@ namespace rls
 		j["name"] = p.name;
 		j["creatorId"] = p.creatorId;
 		j["members"] = p.members;
-		return j.dump();
+		return j;
+	}
+	std::string JSONSerializer::toJSON(const Place &p)
+	{
+		return toJSON_int(p).dump();
 	}
 	void JSONSerializer::fromJSON(const std::string &str, Place *p)
 	{
@@ -191,6 +202,30 @@ namespace rls
 	std::string JSONSerializer::toJSON(const std::vector<int> &ids)
 	{
 		json j = ids;
+		return j.dump();
+	}
+	std::string JSONSerializer::toJSON(const ContainerItemPlaceUser &cont)
+	{
+		json itemsJson = json::array();
+		for (auto myit = cont.items.begin(); myit != cont.items.end(); myit++)
+		{
+			itemsJson.push_back(toJSON_int(*myit));
+		}
+		json placesJson = json::array();
+		for (auto myit = cont.places.begin(); myit != cont.places.end(); myit++)
+		{
+			placesJson.push_back(toJSON_int(*myit));
+		}
+		json usersJson = json::array();
+		for (auto myit = cont.users.begin(); myit != cont.users.end(); myit++)
+		{
+			usersJson.push_back(toJSON_int(*myit));
+		}
+
+		json j;
+		j["items"] = itemsJson;
+		j["places"] = placesJson;
+		j["users"] = usersJson;
 		return j.dump();
 	}
 	JSONSerializer::~JSONSerializer()
