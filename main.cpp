@@ -1,6 +1,7 @@
 #include "App.h"
 #include "CmakeConfig.h"
 #include "spdlog/sinks/rotating_file_sink.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/spdlog.h"
 #include <iostream>
 #include <signal.h>
@@ -32,8 +33,9 @@ int main(int argc, char *argv[])
 
 	try
 	{
+		//auto logger = spdlog::stdout_color_mt("rlservlib"); 
 		auto logger = spdlog::rotating_logger_mt("rlservlib", "logs/rotating-log.txt", 5000000, 3);
-		logger->set_level(spdlog::level::debug);
+		logger->set_level(spdlog::level::info);
 	}
 	catch (const spdlog::spdlog_ex &ex)
 	{

@@ -1,9 +1,21 @@
-list(APPEND WEBSERVICE_SOURCES ConHandle.cpp)
-list(APPEND WEBSERVICE_SOURCES HTTPSocket.cpp)
 list(APPEND WEBSERVICE_SOURCES MockConHandle.cpp)
 list(APPEND WEBSERVICE_SOURCES SimpleConHandle.cpp)
 list(APPEND WEBSERVICE_SOURCES SimpleSocket.cpp)
+list(APPEND WEBSERVICE_SOURCES SocketEtr.cpp)
+list(APPEND WEBSERVICE_SOURCES SocketYhirose.cpp)
 add_library(WebService ${WEBSERVICE_SOURCES})
-target_include_directories(WebService INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(WebService PUBLIC include "${PROJECT_SOURCE_DIR}/modules/libhttp/include")
-target_link_libraries(WebService PUBLIC Models spdlog::spdlog pthread "${PROJECT_SOURCE_DIR}/modules/libhttp/lib/libhttp.a")
+find_package(OpenSSL REQUIRED)
+find_package(LibHttpServer REQUIRED)
+
+
+
+target_include_directories(WebService INTERFACE 
+	${LIBHTTPSERVER_INCLUDE_DIRS} 
+	${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(WebService PUBLIC 
+	Models 
+	${LIBHTTPSERVER_LIBRARIES}
+	OpenSSL::SSL 
+	OpenSSL::Crypto 
+	spdlog::spdlog 
+	pthread)

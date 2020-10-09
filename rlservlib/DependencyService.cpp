@@ -1,11 +1,12 @@
 #include "DependencyService.h"
-#include "HTTPSocket.h"
 #include "JSONSerializer.h"
 #include "MockDataStore.h"
 #include "SQLDataBaseItem.h"
 #include "SQLDataBaseUser.h"
 #include "SQLDataBasePlaces.h"
 #include "SimpleSocket.h"
+#include "SocketYhirose.h"
+#include "SocketEtr.h"
 
 namespace rls
 {
@@ -40,7 +41,7 @@ void DependencyService::dispose()
 IHTTPSocket *DependencyService::getHttpSocket()
 {
 	if (soc == nullptr)
-		soc = new HTTPSocket();
+		soc = new SocketEtr();
 	return soc;
 }
 

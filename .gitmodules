@@ -1,12 +1,18 @@
 [submodule "gtest/modules/googletest2"]
 	path = gtest/modules/googletest2
 	url = https://github.com/einsteinmaster/googletest.git
-[submodule "rlservlib/modules/libhttp"]
-	path = rlservlib/modules/libhttp
-	url = https://github.com/lammertb/libhttp.git
 [submodule "rlservlib/modules/json2"]
 	path = rlservlib/modules/json2
 	url = https://github.com/einsteinmaster/json.git
 [submodule "rlservlib/modules/spdlog"]
 	path = rlservlib/modules/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "rlservlib/modules/cpp-httplib"]
+	path = rlservlib/modules/cpp-httplib
+	url = https://github.com/yhirose/cpp-httplib.git
+[submodule "rlservlib/modules/libhttp"]
+	path = rlservlib/modules/libhttp
+	url = https://github.com/lammertb/libhttp.git
+[submodule "rlservlib/modules/libhttpserver"]
+	path = rlservlib/modules/libhttpserver
+	url = https://github.com/etr/libhttpserver.git

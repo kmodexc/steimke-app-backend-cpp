@@ -166,6 +166,33 @@ namespace rls
 			return true;
 		}
 
+		if (path.find("/api/all") == 0)
+		{
+			std::vector<int> itemIds = dbitem->getIDs();
+			std::vector<Item> itemList;
+			for(auto myit = itemIds.begin(); myit != itemIds.end() ; myit++){
+				itemList.push_back(dbitem->get(*myit));
+			}
+			std::vector<int> placeIds = dbplaces->getIDs();
+			std::vector<Place> placeList;
+			for(auto myit = placeIds.begin(); myit != placeIds.end() ; myit++){
+				placeList.push_back(dbplaces->get(*myit));
+			}
+			std::vector<int> userIds = dbuser->getIDs();
+			std::vector<User> userList;
+			for(auto myit = userIds.begin(); myit != userIds.end() ; myit++){
+				userList.push_back(dbuser->get(*myit));
+			}
+			ContainerItemPlaceUser cont;
+			cont.items = itemList;
+			cont.places = placeList;
+			cont.users = userList;
+			std::string content = ser->toJSON(cont);
+			ok(soc, content);
+			
+			return true;
+		}
+
 		// Default answer
 
 		std::string content = "Hello from HelloSteimke RESTles API Server!\nRequested Path: '";

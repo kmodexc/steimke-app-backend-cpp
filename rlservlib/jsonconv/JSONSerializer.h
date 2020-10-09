@@ -18,8 +18,10 @@ public:
 	void fromJSON(const std::string &, User *it) override;
 	void fromJSON(const std::string &, Place *it) override;
 
-	void addToJSON(nlohmann::json &j, const TimeStamp &time, const std::string &prefix);
-	void getFromJSON(const nlohmann::json &j, TimeStamp *it, const std::string &prefix);
+	static void addToJSON(nlohmann::json &j, const TimeStamp &time, const std::string &prefix);
+	static void getFromJSON(const nlohmann::json &j, TimeStamp *it, const std::string &prefix);
+
+	virtual std::string toJSON(const ContainerItemPlaceUser& cont) override;
 
 	~JSONSerializer() override;
 };

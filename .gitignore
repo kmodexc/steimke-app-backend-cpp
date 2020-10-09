@@ -5,3 +5,4 @@ bin/
 modules/bld/
 build/
 logs/
+debug/
