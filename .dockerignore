@@ -1,0 +1,8 @@
+.vscode/
+obj/
+bin/
+*.sqlite
+modules/bld/
+build/
+logs/
+debug/
