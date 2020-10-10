@@ -1,3 +1,0 @@
-[submodule "rlservlib/modules/spdlog"]
-	path = rlservlib/modules/spdlog
-	url = https://github.com/gabime/spdlog.git
