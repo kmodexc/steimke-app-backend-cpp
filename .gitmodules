@@ -1,6 +1,3 @@
-[submodule "gtest/modules/googletest2"]
-	path = gtest/modules/googletest2
-	url = https://github.com/einsteinmaster/googletest.git
 [submodule "rlservlib/modules/json2"]
 	path = rlservlib/modules/json2
 	url = https://github.com/einsteinmaster/json.git

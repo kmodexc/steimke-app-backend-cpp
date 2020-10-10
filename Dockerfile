@@ -29,12 +29,13 @@ RUN cd spdlog && mkdir build
 WORKDIR /opt/spdlog/spdlog/build
 RUN cmake .. && make -j
 
-WORKDIR /home/marius/restlessserver
-RUN git clone git@gitlab.gwdg.de:m.schlueter01/restlesserver.git
+WORKDIR /opt/rlserv
+RUN git clone https://gitlab.gwdg.de/m.schlueter01/restlesserver.git
+WORKDIR /opt/rlserv/restlesserver
 RUN git submodule init && git submodule update
 
 # COPY . .
-# RUN mkdir build
+# RUN mkdir build3
 # RUN cd build
 # RUN cmake ..
 # RUN gtest/gtest_all
