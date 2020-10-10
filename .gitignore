@@ -6,3 +6,4 @@ modules/bld/
 build/
 logs/
 debug/
+*.pem

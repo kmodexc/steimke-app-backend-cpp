@@ -1,4 +1,4 @@
-add_subdirectory(modules/googletest2)
+#add_subdirectory(modules/googletest2)
 list(APPEND GTEST_SOURCES itemtests.cpp)
 list(APPEND GTEST_SOURCES usertest.cpp)
 list(APPEND GTEST_SOURCES jsontests.cpp)
