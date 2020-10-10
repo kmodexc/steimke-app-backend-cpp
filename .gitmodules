@@ -4,6 +4,3 @@
 [submodule "rlservlib/modules/spdlog"]
 	path = rlservlib/modules/spdlog
 	url = https://github.com/gabime/spdlog.git
-[submodule "rlservlib/modules/libhttpserver"]
-	path = rlservlib/modules/libhttpserver
-	url = https://github.com/etr/libhttpserver.git
