@@ -1,5 +1,4 @@
 list(APPEND JSONCONV_SOURCES JSONSerializer.cpp)
-find_package(nlohmann_json REQUIRED)
 add_library(JsonConv ${JSONCONV_SOURCES})
 target_include_directories(JsonConv INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(JsonConv PUBLIC Models nlohmann_json::nlohmann_json)
+target_link_libraries(JsonConv PUBLIC Models)

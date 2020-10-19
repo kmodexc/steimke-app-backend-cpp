@@ -1,6 +1,6 @@
 #pragma once
 #include "IJSONSerializer.h"
-#include "nlohmann/json.hpp"
+#include "json.hpp"
 
 namespace rls
 {
