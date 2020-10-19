@@ -2,5 +2,6 @@
 list(APPEND GTEST_SOURCES itemtests.cpp)
 list(APPEND GTEST_SOURCES usertest.cpp)
 list(APPEND GTEST_SOURCES jsontests.cpp)
+add_subdirectory(modules)
 add_executable(gtest_all main.cpp ${GTEST_SOURCES})
 target_link_libraries(gtest_all PUBLIC rlservlib gtest_main)
