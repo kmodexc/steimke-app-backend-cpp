@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+  heysteimkebase:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+      - "30000:30002"
+    volumes:
+      - "datahsbs:/opt/rlserv/build/data:rw"
+  heysteimkebasisgruppe:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+      - "30003:30002"
+    volumes:
+      - "datahsbg:/opt/rlserv/build/data:rw"
+  heysteimkedefault:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+      - "30002:30002"
+    volumes:
+      - "datahsd:/opt/rlserv/build/data:rw"
+  heysteimkeintern:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+      - "30001:30002"
+    volumes:
+      - "datahsi:/opt/rlserv/build/data:rw"
+
+volumes:
+  datahsbs:
+  datahsbg:
+  datahsd:
+  datahsi:

@@ -25,7 +25,7 @@ public:
 
 public:
 	const std::string db_file_name = "db_places.sqlite";
-	const std::string db_file_path = "";
+	const std::string db_file_path = "data/";
 };
 
 } // namespace rls

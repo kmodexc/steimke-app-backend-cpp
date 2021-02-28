@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 	try
 	{
 		auto logger = spdlog::stdout_color_mt("rlservlib");
-		//auto logger = spdlog::rotating_logger_mt("rlservlib", "logs/rotating-log.txt", 5000000, 3);
+		//auto logger = spdlog::rotating_logger_mt("rlservlib", "data/logs/rotating-log.txt", 5000000, 3);
 		logger->set_level(spdlog::level::info);
 	}
 	catch (const spdlog::spdlog_ex &ex)
@@ -62,9 +62,10 @@ int main(int argc, char *argv[])
 			glob_app = app;
 
 			std::string line;
-			std::getline(std::cin, line);
-			while (line.find("quit rlserv") != 0)
+			do {
 				sleep(1);
+				std::getline(std::cin, line);
+			} while (line.find("quit rlserv") != 0);
 
 			glob_app = nullptr;
 

@@ -24,7 +24,7 @@ public:
 
 public:
 	const std::string db_file_name = "db_item.sqlite";
-	const std::string db_file_path = "";
+	const std::string db_file_path = "data/";
 };
 
 
