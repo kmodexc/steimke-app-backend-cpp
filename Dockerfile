@@ -39,6 +39,7 @@ RUN apt-get install -y libssl-dev
 #install restlessserver
 WORKDIR /opt/rlserv
 COPY . .
+RUN ln -s /opt/gtest/googletest /opt/rlserv/gtest/modules/googletest
 RUN mkdir build
 WORKDIR /opt/rlserv/build
 RUN cmake .. && make
