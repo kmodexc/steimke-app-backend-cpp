@@ -42,5 +42,6 @@ COPY . .
 RUN mkdir build
 WORKDIR /opt/rlserv/build
 RUN cmake .. && make
-#RUN gtest/gtest_all
+RUN mkdir data
+RUN gtest/gtest_all
 CMD /opt/rlserv/build/rlserv
