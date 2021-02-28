@@ -1,4 +1,8 @@
-FROM thebanger/build-ess-docker:0.1
+FROM ubuntu
+RUN apt-get update && apt-get install -y build-essential
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y tzdata
+RUN apt-get install -y git cmake
+
 #install gtest
 WORKDIR /opt/gtest
 RUN git clone https://github.com/google/googletest.git
@@ -8,7 +12,7 @@ RUN cmake ..
 RUN make
 
 #install httpserver deps
-RUN sudo apt install -y libmicrohttpd-dev libgnutls28-dev autotools-dev automake autoconf libtool
+RUN apt-get install -y libmicrohttpd-dev libgnutls28-dev autotools-dev automake autoconf libtool
 
 #install httpserver
 WORKDIR /opt/etrhttp
@@ -30,7 +34,7 @@ RUN cmake ..
 RUN make -j
 
 #install openssl
-RUN sudo apt-get install libssl-dev
+RUN apt-get install -y libssl-dev
 
 #install restlessserver
 WORKDIR /opt/rlserv
@@ -38,3 +42,8 @@ COPY . .
 RUN mkdir build
 WORKDIR /opt/rlserv/build
 RUN cmake .. && make && make test
+
+WORKDIR /opt/rlserv
+COPY key.pem key.pem
+COPY pubkey.pem pubkey.pem
+COPY cert.pem cert.pem

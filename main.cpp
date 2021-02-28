@@ -6,6 +6,8 @@
 #include <iostream>
 #include <signal.h>
 #include <thread>
+#include <stdexcept>
+#include <unistd.h>
 
 using namespace std;
 using namespace rls;
@@ -21,7 +23,8 @@ void signal_handler(int signal)
 		spdlog::get("rlservlib")->info("signal {} send to end program", signal);
 		spdlog::get("rlservlib")->flush();
 	}
-	if(glob_app != nullptr){
+	if (glob_app != nullptr)
+	{
 		glob_app->stop();
 	}
 	exit(EXIT_SUCCESS);
@@ -33,8 +36,8 @@ int main(int argc, char *argv[])
 
 	try
 	{
-		//auto logger = spdlog::stdout_color_mt("rlservlib"); 
-		auto logger = spdlog::rotating_logger_mt("rlservlib", "logs/rotating-log.txt", 5000000, 3);
+		auto logger = spdlog::stdout_color_mt("rlservlib");
+		//auto logger = spdlog::rotating_logger_mt("rlservlib", "logs/rotating-log.txt", 5000000, 3);
 		logger->set_level(spdlog::level::info);
 	}
 	catch (const spdlog::spdlog_ex &ex)
@@ -61,9 +64,7 @@ int main(int argc, char *argv[])
 			std::string line;
 			std::getline(std::cin, line);
 			while (line.find("quit rlserv") != 0)
-			{
-				std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::minutes(1));
-			}
+				sleep(1);
 
 			glob_app = nullptr;
 
@@ -74,10 +75,15 @@ int main(int argc, char *argv[])
 			spdlog::get("rlservlib")->error("Application didnt initialize successful");
 		}
 	}
-	catch (exception &exc)
+	catch (const std::exception &exc)
 	{
 		spdlog::get("rlservlib")->error("Exception in main: {}", exc.what());
+		spdlog::get("rlservlib")->flush();
+		return EXIT_FAILURE;
 	}
 	if (app != nullptr)
 		delete app;
+	spdlog::get("rlservlib")->error("Exiting normally");
+	spdlog::get("rlservlib")->flush();
+	return EXIT_SUCCESS;
 }
