@@ -40,9 +40,9 @@ RUN apt-get install -y libssl-dev
 WORKDIR /opt/rlserv
 COPY . .
 RUN ln -s /opt/gtest/googletest /opt/rlserv/gtest/modules/googletest
-# RUN mkdir build
-# WORKDIR /opt/rlserv/build
-# RUN cmake .. && make
-# RUN mkdir data
-# RUN gtest/gtest_all
-# CMD /opt/rlserv/build/rlserv
+RUN mkdir build
+WORKDIR /opt/rlserv/build
+RUN cmake .. && make
+RUN mkdir data
+RUN gtest/gtest_all
+CMD /opt/rlserv/build/rlserv
