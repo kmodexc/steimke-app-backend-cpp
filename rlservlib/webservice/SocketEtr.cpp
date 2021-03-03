@@ -25,8 +25,18 @@ namespace rls
 		const std::shared_ptr<httpserver::http_response> render(const httpserver::http_request &req)
 		{
 			spdlog::get("rlservlib")->info("incoming {} request", req.get_method());
-			spdlog::get("rlservlib")->info("user '{}' pw '{}'", req.get_user(),req.get_pass());
+			spdlog::get("rlservlib")->info("user '{}' pw '{}'", req.get_user(), req.get_pass());
 			spdlog::get("rlservlib")->info("content {}", req.get_content());
+
+			if (req.get_method() == "OPTIONS")
+			{
+				auto presp = std::shared_ptr<httpserver::http_response>(new httpserver::string_response("", 204));
+				presp->with_header("Access-Control-Allow-Origin", "*");
+				presp->with_header("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, DELETE");
+				presp->with_header("Access-Control-Allow-Headers", "Authorization");
+				presp->with_header("Access-Control-Max-Age", "86400");
+				return presp;
+			}
 
 			if (req.get_user() != "myuser" || req.get_pass() != "mypass")
 			{
@@ -60,6 +70,10 @@ namespace rls
 			int respcode = (ok ? 200 : 500);
 			std::string content = handle.send_content.substr(handle.send_content.find("\r\n\r\n") + 4);
 			auto presp = std::shared_ptr<httpserver::http_response>(new httpserver::string_response(content, respcode, "application/json"));
+			presp->with_header("Access-Control-Allow-Origin", "*");
+			presp->with_header("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, DELETE");
+			presp->with_header("Access-Control-Allow-Headers", "Authorization");
+			presp->with_header("Access-Control-Max-Age", "86400");
 			return presp;
 		}
 	};
@@ -76,14 +90,14 @@ namespace rls
 
 		std::thread *pth = new std::thread([this]() {
 			httpserver::webserver ws = httpserver::create_webserver(this->port)
-											.single_resource()
-											.max_threads(8)
-											.use_ssl()
-											.https_mem_key("../key.pem")
-											.https_mem_cert("../cert.pem");
+										   .single_resource()
+										   .max_threads(8)
+										   .use_ssl()
+										   .https_mem_key("../key.pem")
+										   .https_mem_cert("../cert.pem");
 
 			http_resource hwr((IConHandler *)this->handler);
-			ws.register_resource("/",&hwr,true);
+			ws.register_resource("/", &hwr, true);
 
 			spdlog::get("rlservlib")->info("Starting eltr on Port {}", this->port);
 
