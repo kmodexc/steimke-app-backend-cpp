@@ -36,7 +36,7 @@ RUN make -j
 #install openssl
 RUN apt-get install -y libssl-dev
 
-#install restlessserver
+# build restlessserver
 WORKDIR /opt/rlserv
 COPY . .
 RUN ln -s /opt/gtest/googletest /opt/rlserv/gtest/modules/googletest
@@ -45,4 +45,9 @@ WORKDIR /opt/rlserv/build
 RUN cmake .. && make
 RUN mkdir data
 RUN gtest/gtest_all
+
+# init and setup image
+COPY ./dbinitdata/ /opt/rlserv/build/data
+VOLUME /opt/rlserv/build/data
+EXPOSE 443/tcp
 CMD /opt/rlserv/build/rlserv
