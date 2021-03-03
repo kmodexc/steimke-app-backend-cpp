@@ -8,3 +8,4 @@ logs/
 debug/
 rlservlib/modules/json2
 rlservlib/modules/spdlog
+gtest/modules/googletest
