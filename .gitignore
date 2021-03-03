@@ -8,3 +8,4 @@ logs/
 debug/
 *.pem
 .devcontainer/
+gtest/modules/googletest
