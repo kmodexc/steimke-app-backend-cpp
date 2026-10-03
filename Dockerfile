@@ -47,7 +47,7 @@ RUN mkdir data
 RUN gtest/gtest_all
 
 # init and setup image
-COPY ./dbinitdata/ /opt/rlserv/build/data
+# COPY ./dbinitdata/ /opt/rlserv/build/data
 VOLUME /opt/rlserv/build/data
 EXPOSE 80/tcp
 CMD /opt/rlserv/build/rlserv
