@@ -27,7 +27,7 @@ public:
 	virtual ~App();
 
 public:
-	const int PORT = 443;
+	const int PORT = 80;
 };
 
 }

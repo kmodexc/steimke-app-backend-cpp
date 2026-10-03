@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports: 
-      - "30000:443"
+      - "30000:80"
     volumes:
       - "datahsbs:/opt/rlserv/build/data:rw"
 volumes:

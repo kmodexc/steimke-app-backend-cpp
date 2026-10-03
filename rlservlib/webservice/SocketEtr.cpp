@@ -90,11 +90,8 @@ namespace rls
 
 		std::thread *pth = new std::thread([this]() {
 			httpserver::webserver ws = httpserver::create_webserver(this->port)
-										   .single_resource()
-										   .max_threads(8)
-										   .use_ssl()
-										   .https_mem_key("../key.pem")
-										   .https_mem_cert("../cert.pem");
+											   .single_resource()
+											   .max_threads(8);
 
 			http_resource hwr((IConHandler *)this->handler);
 			ws.register_resource("/", &hwr, true);
