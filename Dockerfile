@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:24.04 AS builder
 RUN apt-get update && apt-get install -y build-essential
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y tzdata
 RUN apt-get install -y git cmake
@@ -42,12 +42,32 @@ COPY . .
 RUN ln -s /opt/gtest/googletest /opt/rlserv/gtest/modules/googletest
 RUN mkdir build
 WORKDIR /opt/rlserv/build
-RUN cmake .. && make -j"$(nproc)"
+RUN cmake -DCMAKE_BUILD_TYPE=MinSizeRel .. && make -j"$(nproc)"
 RUN mkdir data
 RUN gtest/gtest_all
+# Strip build-time symbols before copying the artifacts into the runtime image.
+RUN strip --strip-unneeded /opt/rlserv/build/rlserv \
+	&& find /usr/local/lib -maxdepth 1 -type f -name 'libhttpserver.so*' \
+		-exec strip --strip-unneeded {} +
 
-# init and setup image
-# COPY ./dbinitdata/ /opt/rlserv/build/data
+FROM ubuntu:24.04 AS runtime
+
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends \
+		ca-certificates \
+		libgcc-s1 \
+		libgnutls30t64 \
+		libmicrohttpd12t64 \
+		libssl3t64 \
+		libstdc++6 \
+	&& rm -rf /var/lib/apt/lists/*
+
+ENV LD_LIBRARY_PATH=/usr/local/lib
+
+COPY --from=builder /usr/local/lib/libhttpserver.so* /usr/local/lib/
+COPY --from=builder /opt/rlserv/build/rlserv /opt/rlserv/build/rlserv
+
+WORKDIR /opt/rlserv/build
 VOLUME /opt/rlserv/build/data
 EXPOSE 80/tcp
-CMD /opt/rlserv/build/rlserv
+CMD ["/opt/rlserv/build/rlserv"]
